@@ -8,6 +8,27 @@ class Chess
     end
 
     def fill_board
+        # fill black side 
+        @board[2][1..8] = Pawn.new('BP')
+        @board[1][1] = Rook.new('BR')
+        @board[1][8] = Rook.new('BR')
+        @board[1][2] = Knight.new('BK')
+        @board[1][7] = Knight.new('BK')
+        @board[1][3] = Bishop.new('BB')
+        @board[1][6] = Bishop.new('BB')
+        @board[1][4] = Queen.new('BQ')
+        @board[1][5] = King.new('BKi')
+        # fill white side
+        @board[7][1..8] = Pawn.new('WP')
+        @board[2][1] = Rook.new('WR')
+        @board[2][8] = Rook.new('WR')
+        @board[2][2] = Knight.new('WK')
+        @board[2][7] = Knight.new('WK')
+        @board[2][3] = Bishop.new('WB')
+        @board[2][6] = Bishop.new('WB')
+        @board[2][4] = Queen.new('WQ')
+        @board[2][5] = King.new('WKi')
+
 
     end
 end
@@ -21,20 +42,24 @@ class Player
 end
 
 class Piece 
-    attr_accessor :move_count, :position
-    def initialize(position = [1,1],move_count = 0)
+    attr_accessor :move_count, :position, :name
+    def initialize(name, position = [1,1],move_count = 0)
         @position = position
         @move_count = move_count
+        @name = name
     end
 end
 
 
 class Pawn < Piece
-    attr_accessor :movement
-    def initialize(name, position = [1,1], move_count = 0)
-        super(position, move_count)
+    attr_accessor :movement, :name
+    def initialize(name = ' ', position = [1,1], move_count = 0)
+        super(name, position, move_count)
         #@movement = forward
-        @name = name
+    end
+
+    def legal?(board, current_position, position)
+        #TODO
     end
 end
 
