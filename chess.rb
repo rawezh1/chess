@@ -9,25 +9,25 @@ class Chess
 
     def fill_board
         # fill black side 
-        @board[2][1..8] = Pawn.new('BP')
-        @board[1][1] = Rook.new('BR')
-        @board[1][8] = Rook.new('BR')
-        @board[1][2] = Knight.new('BK')
-        @board[1][7] = Knight.new('BK')
-        @board[1][3] = Bishop.new('BB')
-        @board[1][6] = Bishop.new('BB')
-        @board[1][4] = Queen.new('BQ')
-        @board[1][5] = King.new('BKi')
+        @board[1] = Array.new(8){Pawn.new('BP')}
+        @board[0][0] = Rook.new('BR')
+        @board[0][7] = Rook.new('BR')
+        @board[0][1] = Knight.new('BK')
+        @board[0][6] = Knight.new('BK')
+        @board[0][2] = Bishop.new('BB')
+        @board[0][5] = Bishop.new('BB')
+        @board[0][3] = Queen.new('BQ')
+        @board[0][4] = King.new('BKi')
         # fill white side
-        @board[7][1..8] = Pawn.new('WP')
-        @board[2][1] = Rook.new('WR')
-        @board[2][8] = Rook.new('WR')
-        @board[2][2] = Knight.new('WK')
-        @board[2][7] = Knight.new('WK')
-        @board[2][3] = Bishop.new('WB')
-        @board[2][6] = Bishop.new('WB')
-        @board[2][4] = Queen.new('WQ')
-        @board[2][5] = King.new('WKi')
+        @board[6] = Array.new(8){Pawn.new('WP')}
+        @board[7][0] = Rook.new('WR')
+        @board[7][7] = Rook.new('WR')
+        @board[7][1] = Knight.new('WK')
+        @board[7][6] = Knight.new('WK')
+        @board[7][2] = Bishop.new('WB')
+        @board[7][5] = Bishop.new('WB')
+        @board[7][3] = Queen.new('WQ')
+        @board[7][4] = King.new('WKi')
         self
     end
 end
@@ -107,4 +107,13 @@ class King < Piece
 end
 
 chess = Chess.new().fill_board.board
+chess = chess.map.with_index do |array,index|
+    array.map.with_index do |element,in_index|
+        if element.class == String
+            element
+        else
+            element.name
+        end
+    end
+end
 p chess
