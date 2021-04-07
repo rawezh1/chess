@@ -28,8 +28,7 @@ class Chess
         @board[2][6] = Bishop.new('WB')
         @board[2][4] = Queen.new('WQ')
         @board[2][5] = King.new('WKi')
-
-
+        self
     end
 end
 
@@ -107,6 +106,5 @@ class King < Piece
     end
 end
 
-chess = Chess.new().board
-chess[1][2] = 'S'
+chess = Chess.new().fill_board.board
 p chess
