@@ -6,6 +6,10 @@ class Chess
         #@player2 = player.new
         @turns = 0
     end
+
+    def fill_board
+
+    end
 end
 
 class Player
@@ -27,9 +31,10 @@ end
 
 class Pawn < Piece
     attr_accessor :movement
-    def initialize(position = [1,1], move_count = 0)
+    def initialize(name, position = [1,1], move_count = 0)
         super(position, move_count)
         #@movement = forward
+        @name = name
     end
 end
 
@@ -43,33 +48,37 @@ end
 
 class Bishop < Piece
     attr_accessor :movement
-    def initialize(position = [1,1], move_count = 0)
+    def initialize(name, position = [1,1], move_count = 0)
         super(position, move_count)
         #@movement = digonal
+        @name = name
     end
 end
 
 class Rook < Piece
     attr_accessor :movement
-    def initialize(position = [1,1], move_count = 0)
+    def initialize(name, position = [1,1], move_count = 0)
         super(position,move_count)
         #@movement = straight
+        @name = name
     end
 end
 
 class Queen < Piece
     attr_accessor :movement
-    def initialize(position = [1,1], move_count = 0)
+    def initialize(name, position = [1,1], move_count = 0)
         super(position, move_count)
         #@movement = straight-diagonal
+        @name = name
     end
 end
 
 class King < Piece
     attr_accessor :movement
-    def initialize(position = [1,1], move_count = 0)
+    def initialize(name, position = [1,1], move_count = 0)
         super(position, move_count)
         #@movement = all-sides
+        @name = name
     end
 end
 
