@@ -11,7 +11,7 @@ end
 class Player
     def initialize(name)
         @name = name
-        @pieces = [pieces]
+        #@pieces = [pieces]
         @in_check = false
     end
 end
@@ -24,13 +24,6 @@ class Piece
     end
 end
 
-class Rook < Piece
-    attr_accessor :movement
-    def initialize(position = [1,1], move_count = 0)
-        super(position,move_count)
-        #@movement = line
-    end
-end
 
 class Pawn < Piece
     attr_accessor :movement
@@ -40,6 +33,45 @@ class Pawn < Piece
     end
 end
 
+class Knight < Piece
+    attr_accessor :movement
+    def initialize(position = [1,1], move_count = 0)
+        super(position, move_count)
+        #@movement = L-shaped
+    end
+end
+
+class Bishop < Piece
+    attr_accessor :movement
+    def initialize(position = [1,1], move_count = 0)
+        super(position, move_count)
+        #@movement = digonal
+    end
+end
+
+class Rook < Piece
+    attr_accessor :movement
+    def initialize(position = [1,1], move_count = 0)
+        super(position,move_count)
+        #@movement = straight
+    end
+end
+
+class Queen < Piece
+    attr_accessor :movement
+    def initialize(position = [1,1], move_count = 0)
+        super(position, move_count)
+        #@movement = straight-diagonal
+    end
+end
+
+class King < Piece
+    attr_accessor :movement
+    def initialize(position = [1,1], move_count = 0)
+        super(position, move_count)
+        #@movement = all-sides
+    end
+end
 
 chess = Chess.new().board
 chess[1][2] = 'S'
