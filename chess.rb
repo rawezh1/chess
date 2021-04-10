@@ -33,9 +33,14 @@ class Chess
 
     def play
         #until self.finished?
-          #white player turn
+          self.turn(player1)
           #black player turn
         #end
+    end
+
+    def turn
+
+
     end
 end
 
