@@ -33,14 +33,22 @@ class Chess
 
     def play
         #until self.finished?
-          #self.turn(player1)
+          self.turn(player1)
           #black player turn
         #end
     end
 
     def turn(player)
-        "It is #{player.name} players turn, please select a piece"
-        #choice = self.choose(player)
+        p "It is #{player.name} players turn, please select a piece by typing its position"
+        choice = self.choose(player)
+    end
+
+    def choose(player)
+        loop do
+            choice = gets.chomp.split('').map(&:to_i)
+            p choice
+            break
+        end
     end
 end
 
@@ -119,8 +127,8 @@ class King < Piece
     end
 end
 
-chess = Chess.new().fill_board.board
-chess = chess.map do |array|
+chess = Chess.new().fill_board
+chess1 = chess.board.map do |array|
     array.map do |element|
         if element.class == String
             element
@@ -129,4 +137,5 @@ chess = chess.map do |array|
         end
     end
 end
-p chess
+p chess1
+chess.play
