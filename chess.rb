@@ -1,3 +1,9 @@
+class String
+    def is_i?
+       /\A[-+]?\d+\z/ === self
+    end
+end
+
 class Chess
     attr_accessor :board,:player1,:player2
     def initialize
@@ -45,9 +51,26 @@ class Chess
 
     def choose(player)
         loop do
-            choice = gets.chomp.split('').map(&:to_i)
+            choice = gets.chomp.split('')
+            if invalid_choice?(choice,player.name[0]) then next end
+            choice = choice.map(&:to_i)
             p choice
             break
+        end
+    end
+
+    def invalid_choice?(choice,p_letter)
+        if choice.length != 2 || !(choice[0].is_i?) || !(choice[1].is_i?) 
+            puts 'Invalid input, please type a correct value'
+            true
+        elsif [choice.map(&:to_i)[0]][choice.map(&:to_i)[1]].nil?
+            puts 'Invalid input, please type a correct value'
+            true
+        elsif @board[choice.map(&:to_i)[0]][choice.map(&:to_i)[1]].name[0] != p_letter
+            puts 'Invalid input, please type a correct value'
+            true
+        else
+            false
         end
     end
 end
