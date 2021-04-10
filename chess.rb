@@ -8,7 +8,7 @@ class Chess
     end
 
     def fill_board
-        # fill black side 
+        # fill black side
         @board[1] = Array.new(8){Pawn.new('BP')}
         @board[0][0] = Rook.new('BR')
         @board[0][7] = Rook.new('BR')
@@ -30,9 +30,13 @@ class Chess
         @board[7][4] = King.new('WKi')
         self
     end
+
+    def play
+    end
 end
 
 class Player
+    attr_accessor :name, :in_check
     def initialize(name)
         @name = name
         #@pieces = [pieces]
