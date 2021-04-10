@@ -2,8 +2,8 @@ class Chess
     attr_accessor :board,:player1,:player2
     def initialize
         @board = Array.new(8) {Array.new(8) {'_'}}
-        @player1 = player.new('White')
-        @player2 = player.new('Black')
+        @player1 = Player.new('White')
+        @player2 = Player.new('Black')
         @turns = 0
     end
 
@@ -33,13 +33,14 @@ class Chess
 
     def play
         #until self.finished?
-          self.turn(player1)
+          #self.turn(player1)
           #black player turn
         #end
     end
 
     def turn(player)
-        
+        "It is #{player.name} players turn, please select a piece"
+        #choice = self.choose(player)
     end
 end
 
@@ -119,8 +120,8 @@ class King < Piece
 end
 
 chess = Chess.new().fill_board.board
-chess = chess.map.with_index do |array,index|
-    array.map.with_index do |element,in_index|
+chess = chess.map do |array|
+    array.map do |element|
         if element.class == String
             element
         else
