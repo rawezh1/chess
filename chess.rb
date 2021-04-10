@@ -2,8 +2,8 @@ class Chess
     attr_accessor :board,:player1,:player2
     def initialize
         @board = Array.new(8) {Array.new(8) {'_'}}
-        #@player1 = player.new
-        #@player2 = player.new
+        @player1 = player.new('White')
+        @player2 = player.new('Black')
         @turns = 0
     end
 
@@ -32,6 +32,10 @@ class Chess
     end
 
     def play
+        #until self.finished?
+          #white player turn
+          #black player turn
+        #end
     end
 end
 
