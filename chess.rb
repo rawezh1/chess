@@ -38,9 +38,8 @@ class Chess
         #end
     end
 
-    def turn
-
-
+    def turn(player)
+        
     end
 end
 
