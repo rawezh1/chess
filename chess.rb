@@ -51,11 +51,11 @@ class Chess
 
   def turn(player)
     p "It is #{player.name} players turn, please select a piece by typing its row and column"
-    choice = self.choose(player)
-    # TODO: a method that takes a position to move the piece to
+    from_pos = self.from_pos(player)
+    to_pos = self.to_pos(player,from_pos)
   end
 
-  def choose(player)
+  def from_pos(player)
     loop do
       choice = gets.chomp.split('')
       if invalid_choice?(choice, player.name[0]) then next end
@@ -83,6 +83,34 @@ class Chess
       false
     end
   end
+
+  def to_pos(player, init_pos)
+    loop do
+      choice = gets.chomp.split('')
+      if invalid_move?(choice, player.name[0], init_pos) then next end
+
+      return choice.map(&:to_i)
+    end
+  end
+
+  def invalid_move?(choice, p_letter, init_pos)
+    if choice.length != 2 || !choice[0].is_i? || !choice[1].is_i?
+      puts 'Invalid input, please type a correct value'
+      return true
+    end
+    choice = choice.map(&:to_i)
+    if !choice[0].between?(0, 7) || !choice[1].between?(0, 7)
+      puts 'Invalid input, please type a correct value'
+      true
+    elsif !possible_move?(choice, init_pos)
+      puts 'Invalid input, please type a correct value'
+      true
+    end
+  end
+
+  def possible_move?(final_pos,init_pos)
+    possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board)
+  end
 end
 
 class Player
@@ -96,10 +124,10 @@ class Player
 end
 
 class Piece
-  attr_accessor :move_count, :position, :name
+  attr_accessor :move_count, :pos, :name
 
-  def initialize(name, position = [1, 1], move_count = 0)
-    @position = position
+  def initialize(name, pos = [1, 1], move_count = 0)
+    @pos = pos
     @move_count = move_count
     @name = name
   end
@@ -108,17 +136,34 @@ end
 class Pawn < Piece
   attr_accessor :movement, :name
 
-  def initialize(name = ' ', position = [1, 1], move_count = 0)
-    super(name, position, move_count)
+  def initialize(name = ' ', pos = [1, 1], move_count = 0)
+    super(name, pos, move_count)
     # @movement = forward
+  end
+
+  def moves(board)
+    if @name[0] == 'W'
+      moves = self.black_moves(board)
+    else
+      moves = self.white_moves(board)
+    end
+  end
+
+  def black_moves(board)
+    moves = []
+    moves << [pos[0] + 2, pos[1]] if @move_count.zero? && board[pos[0] + 2][pos[1]] == '_'
+    moves << [pos[0] + 1, pos[1]] if board[pos[0] + 1][pos[1]] == '_'
+    moves << [pos[0] + 1, pos[1] + 1] unless board[pos[0] + 1][pos[1] + 1] == '_' || board[pos[0] + 1][pos[1] + 1].nil?
+    moves << [pos[0] + 1, pos[1] - 1] unless board[pos[0] + 1][pos[1] - 1] == '_' || board[pos[0] + 1][pos[1] - 1].nil?
+    moves
   end
 end
 
 class Knight < Piece
   attr_accessor :movement
 
-  def initialize(position = [1, 1], move_count = 0)
-    super(position, move_count)
+  def initialize(pos = [1, 1], move_count = 0)
+    super(pos, move_count)
     # @movement = L-shaped
   end
 end
@@ -126,8 +171,8 @@ end
 class Bishop < Piece
   attr_accessor :movement
 
-  def initialize(name, position = [1, 1], move_count = 0)
-    super(position, move_count)
+  def initialize(name, pos = [1, 1], move_count = 0)
+    super(pos, move_count)
     # @movement = digonal
     @name = name
   end
@@ -136,8 +181,8 @@ end
 class Rook < Piece
   attr_accessor :movement
 
-  def initialize(name, position = [1, 1], move_count = 0)
-    super(position, move_count)
+  def initialize(name, pos = [1, 1], move_count = 0)
+    super(pos, move_count)
     # @movement = straight
     @name = name
   end
@@ -146,8 +191,8 @@ end
 class Queen < Piece
   attr_accessor :movement
 
-  def initialize(name, position = [1, 1], move_count = 0)
-    super(position, move_count)
+  def initialize(name, pos = [1, 1], move_count = 0)
+    super(pos, move_count)
     # @movement = straight-diagonal
     @name = name
   end
@@ -156,8 +201,8 @@ end
 class King < Piece
   attr_accessor :movement
 
-  def initialize(name, position = [1, 1], move_count = 0)
-    super(position, move_count)
+  def initialize(name, pos = [1, 1], move_count = 0)
+    super(pos, move_count)
     # @movement = all-sides
     @name = name
   end
