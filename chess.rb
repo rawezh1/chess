@@ -20,25 +20,25 @@ class Chess
 
   def fill_board
     # fill black side
-    @board[1] = Array.new(8) { Pawn.new('BP') }
-    @board[0][0] = Rook.new('BR')
-    @board[0][7] = Rook.new('BR')
-    @board[0][1] = Knight.new('BK')
-    @board[0][6] = Knight.new('BK')
-    @board[0][2] = Bishop.new('BB')
-    @board[0][5] = Bishop.new('BB')
-    @board[0][3] = Queen.new('BQ')
-    @board[0][4] = King.new('BKi')
+    @board[1] = Array.new(8).fill { |i| Pawn.new('BP', [1, i]) }
+    @board[0][0] = Rook.new('BR', [0, 0])
+    @board[0][7] = Rook.new('BR', [0, 7])
+    @board[0][1] = Knight.new('BK', [0, 1])
+    @board[0][6] = Knight.new('BK', [0, 6])
+    @board[0][2] = Bishop.new('BB', [0, 2])
+    @board[0][5] = Bishop.new('BB', [0, 5])
+    @board[0][3] = Queen.new('BQ', [0, 3])
+    @board[0][4] = King.new('BKi', [0, 4])
     # fill white side
-    @board[6] = Array.new(8) { Pawn.new('WP') }
-    @board[7][0] = Rook.new('WR')
-    @board[7][7] = Rook.new('WR')
-    @board[7][1] = Knight.new('WK')
-    @board[7][6] = Knight.new('WK')
-    @board[7][2] = Bishop.new('WB')
-    @board[7][5] = Bishop.new('WB')
-    @board[7][3] = Queen.new('WQ')
-    @board[7][4] = King.new('WKi')
+    @board[6] = Array.new(8).fill { |i| Pawn.new('WP', [6, i]) }
+    @board[7][0] = Rook.new('WR', [7, 0])
+    @board[7][7] = Rook.new('WR', [7, 7])
+    @board[7][1] = Knight.new('WK', [7, 1])
+    @board[7][6] = Knight.new('WK', [7, 6])
+    @board[7][2] = Bishop.new('WB', [7, 2])
+    @board[7][5] = Bishop.new('WB', [7, 5])
+    @board[7][3] = Queen.new('WQ', [7, 3])
+    @board[7][4] = King.new('WKi', [7, 4])
     self
   end
 
@@ -52,7 +52,7 @@ class Chess
   def turn(player)
     p "It is #{player.name} players turn, please select a piece by typing its row and column"
     choice = self.choose(player)
-    p choice
+    # TODO: a method that takes a position to move the piece to
   end
 
   def choose(player)
@@ -65,8 +65,6 @@ class Chess
   end
 
   def invalid_choice?(choice, p_letter)
-    # More work needed
-    p choice
     if choice.length != 2 || !choice[0].is_i? || !choice[1].is_i?
       puts 'Invalid input, please type a correct value'
       return true
@@ -113,10 +111,6 @@ class Pawn < Piece
   def initialize(name = ' ', position = [1, 1], move_count = 0)
     super(name, position, move_count)
     # @movement = forward
-  end
-
-  def legal?(board, current_position, position)
-    # TODO
   end
 end
 
@@ -169,7 +163,7 @@ class King < Piece
   end
 end
 
-chess = Chess.new().fill_board
+chess = Chess.new.fill_board
 chess1 = chess.board.map do |array|
   array.map do |element|
     if element.class == String
