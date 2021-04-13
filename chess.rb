@@ -157,6 +157,15 @@ class Pawn < Piece
     moves << [pos[0] + 1, pos[1] - 1] unless board[pos[0] + 1][pos[1] - 1] == '_' || board[pos[0] + 1][pos[1] - 1].nil?
     moves
   end
+
+  def white_moves(board)
+    moves = []
+    moves << [pos[0] - 2, pos[1]] if @move_count.zero? && board[pos[0] - 2][pos[1]] == '_'
+    moves << [pos[0] - 1, pos[1]] if board[pos[0] + 1][pos[1]] == '_'
+    moves << [pos[0] - 1, pos[1] + 1] unless board[pos[0] - 1][pos[1] + 1] == '_' || board[pos[0] - 1][pos[1] + 1].nil?
+    moves << [pos[0] - 1, pos[1] - 1] unless board[pos[0] - 1][pos[1] - 1] == '_' || board[pos[0] - 1][pos[1] - 1].nil?
+    moves
+  end
 end
 
 class Knight < Piece
