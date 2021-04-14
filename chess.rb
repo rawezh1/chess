@@ -58,13 +58,13 @@ class Chess
   def from_pos(player)
     loop do
       choice = gets.chomp.split('')
-      if invalid_choice?(choice, player.name[0]) then next end
+      if invalid_choice?(choice, player) then next end
 
       return choice.map(&:to_i)
     end
   end
 
-  def invalid_choice?(choice, p_letter)
+  def invalid_choice?(choice, player)
     if choice.length != 2 || !choice[0].is_i? || !choice[1].is_i?
       puts 'Invalid input, please type a correct value'
       return true
@@ -76,7 +76,7 @@ class Chess
     elsif @board[choice[0]][choice[1]] == '_'
       puts 'Invalid input, please type a correct value'
       true
-    elsif @board[choice[0]][choice[1]].name[0] != p_letter
+    elsif @board[choice[0]][choice[1]].name[0] != player.name[0]
       puts 'Invalid input, please type a correct value'
       true
     else
@@ -93,7 +93,7 @@ class Chess
     end
   end
 
-  def invalid_move?(choice, p_letter, init_pos)
+  def invalid_move?(choice, player, init_pos)
     if choice.length != 2 || !choice[0].is_i? || !choice[1].is_i?
       puts 'Invalid input, please type a correct value'
       return true
@@ -102,14 +102,37 @@ class Chess
     if !choice[0].between?(0, 7) || !choice[1].between?(0, 7)
       puts 'Invalid input, please type a correct value'
       true
-    elsif !possible_move?(choice, init_pos)
+    elsif !possible_move?(choice, init_pos, player)
       puts 'Invalid input, please type a correct value'
       true
     end
   end
 
-  def possible_move?(final_pos,init_pos)
+  def possible_move?(final_pos,init_pos, player)
     possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board)
+    unless possible_moves.include?(final_pos, player) then return false end
+    if player.in_check && removes_check?(final_pos) then return true end
+    if player.in_check then return false end
+    if puts_incheck?(final_pos, player) then return false end
+  end
+
+  def removes_check?(final_pos, player)
+    king = player.name[0] == 'W'
+    king_pos = pos_of()
+    if same_diagonal?(final_pos, king_pos)
+
+    elsif final_pos[0] == king_pos[0]
+
+    elsif final_pos[1] == king_pos[1]
+
+    end
+  end
+
+  def king_pos(player)
+
+
+  def same_diagonal?(point1, point2)
+    point2[1]-point1[1] == point2[0] - point1[0] || point2[1]-point1[1] == point1[0] - point2[0]
   end
 end
 
