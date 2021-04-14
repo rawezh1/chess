@@ -117,18 +117,27 @@ class Chess
   end
 
   def removes_check?(final_pos, player)
-    king = player.name[0] == 'W'
-    king_pos = pos_of()
+    king = player.name[0] == 'W' ? 'WKi': 'BKi'
+    king_pos = pos_of(king)
     if same_diagonal?(final_pos, king_pos)
 
     elsif final_pos[0] == king_pos[0]
-
+      
     elsif final_pos[1] == king_pos[1]
 
     end
   end
 
-  def king_pos(player)
+  def pos_of(name)
+    pos = []
+    @board.each_with_index do |e, i|
+      e.each_with_index do |cell, j|
+        if cell == '_' then next end
+        if cell.name == piece then return pos = [i, j] end
+      end
+    end
+      return pos
+  end
 
 
   def same_diagonal?(point1, point2)
