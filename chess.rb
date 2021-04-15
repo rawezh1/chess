@@ -125,7 +125,11 @@ class Chess
     elsif final_pos[1] == king_pos[1] && final_pos[1] == king.checker.pos[1]
       between_file?(final_pos, king) ? true : false
     elsif same_diagonal?(final_pos, king_pos)
-      in_between?(final_pos, king) ? true : false
+      if same_diagonal?(king_pos, king.checker.pos)
+        in_between?(final_pos, king) ? true : false
+      else
+        false
+      end
     end
   end
 
@@ -161,10 +165,20 @@ class Chess
   end
 
   def in_between?(final_pos, king)
-
+    if (king.pos[0] - king.checker.pos[0]).negative?
+      if (king.pos[1] - king.checker.pos[1]).negative?
+        final_pos[0].between?(king.pos[0], king.checker.pos[0]) && final_pos[1].between?(king.pos[1], king.checker.pos[1])
+      else
+        final_pos[0].between?(king.pos[0], king.checker.pos[0]) && final_pos[1].between?(king.checker.pos[1], king.pos[1])
+      end
+    else
+      if (king.pos[1] - king.checker.pos[1]).negative?
+        final_pos[0].between?( king.checker.pos[0], king.pos[0]) && final_pos[1].between?(king.pos[1], king.checker.pos[1])
+      else
+        final_pos[0].between?(king.checker.pos[0], king.pos[0]) && final_pos[1].between?(king.checker.pos[1], king.pos[1])
+      end
+    end
   end
-
-
 end
 
 class Player
