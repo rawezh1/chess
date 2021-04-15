@@ -121,12 +121,12 @@ class Chess
     king_pos = pos_of(king)
     king = @board[king_pos[0]][king_pos[1]]
     if final_pos[0] == king_pos[0] && final_pos[0] == king.checker.pos[0]
-      between_rank?(final_pos, king) ? true : false
+      between_rank?(final_pos, king)
     elsif final_pos[1] == king_pos[1] && final_pos[1] == king.checker.pos[1]
-      between_file?(final_pos, king) ? true : false
+      between_file?(final_pos, king)
     elsif same_diagonal?(final_pos, king_pos)
       if same_diagonal?(king_pos, king.checker.pos)
-        in_between?(final_pos, king) ? true : false
+        in_between?(final_pos, king)
       else
         false
       end
