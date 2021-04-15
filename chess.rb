@@ -117,18 +117,19 @@ class Chess
   end
 
   def removes_check?(final_pos, player)
-    king = player.name[0] == 'W' ? 'WKi': 'BKi'
+    king = player.name[0] == 'W' ? 'WKi' : 'BKi'
     king_pos = pos_of(king)
+    king = @board[king_pos[0]][king_pos[1]]
     if same_diagonal?(final_pos, king_pos)
-
+      in_between?(final_pos, king) ? true : false
     elsif final_pos[0] == king_pos[0]
-      
+      between_rank?(final_pos, king)
     elsif final_pos[1] == king_pos[1]
-
+      between_file?(final_pos, king)
     end
   end
 
-  def pos_of(name)
+  def pos_of(piece)
     pos = []
     @board.each_with_index do |e, i|
       e.each_with_index do |cell, j|
@@ -240,12 +241,13 @@ class Queen < Piece
 end
 
 class King < Piece
-  attr_accessor :movement
+  attr_accessor :movement, :checker
 
   def initialize(name, pos = [1, 1], move_count = 0)
     super(pos, move_count)
     # @movement = all-sides
     @name = name
+    @checker = nil
   end
 end
 
