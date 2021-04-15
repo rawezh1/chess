@@ -140,10 +140,19 @@ class Chess
       return pos
   end
 
-
   def same_diagonal?(point1, point2)
     point2[1]-point1[1] == point2[0] - point1[0] || point2[1]-point1[1] == point1[0] - point2[0]
   end
+
+  def between_rank?(final_pos, king)
+    if king.pos[0] - king.checker.pos[0] < 0
+      final_pos[0].between?(king.pos[0],king.checker.pos[0])
+    else
+      final_pos[0].between?(king.checker.pos[0], king.pos[0])
+    end
+  end
+
+
 end
 
 class Player
