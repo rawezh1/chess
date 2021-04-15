@@ -152,6 +152,13 @@ class Chess
     end
   end
 
+  def between_file?(final_pos, king)
+    if king.pos[1] - king.checker.pos[1] < 0
+      final_pos[1].between?(king.pos[1],king.checker.pos[1])
+    else
+      final_pos[1].between?(king.checker.pos[1], king.pos[1])
+    end
+
 
 end
 
