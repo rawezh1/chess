@@ -120,12 +120,12 @@ class Chess
     king = player.name[0] == 'W' ? 'WKi' : 'BKi'
     king_pos = pos_of(king)
     king = @board[king_pos[0]][king_pos[1]]
-    if same_diagonal?(final_pos, king_pos)
+    if final_pos[0] == king_pos[0] && final_pos[0] == king.checker.pos[0]
+      between_rank?(final_pos, king) ? true : false
+    elsif final_pos[1] == king_pos[1] && final_pos[1] == king.checker.pos[1]
+      between_file?(final_pos, king) ? true : false
+    elsif same_diagonal?(final_pos, king_pos)
       in_between?(final_pos, king) ? true : false
-    elsif final_pos[0] == king_pos[0]
-      between_rank?(final_pos, king)
-    elsif final_pos[1] == king_pos[1]
-      between_file?(final_pos, king)
     end
   end
 
@@ -145,8 +145,8 @@ class Chess
   end
 
   def between_rank?(final_pos, king)
-    if king.pos[0] - king.checker.pos[0] < 0
-      final_pos[0].between?(king.pos[0],king.checker.pos[0])
+    if (king.pos[0] - king.checker.pos[0]).negative?
+      final_pos[0].between?(king.pos[0], king.checker.pos[0])
     else
       final_pos[0].between?(king.checker.pos[0], king.pos[0])
     end
@@ -158,6 +158,11 @@ class Chess
     else
       final_pos[1].between?(king.checker.pos[1], king.pos[1])
     end
+  end
+
+  def in_between?(final_pos, king)
+
+  end
 
 
 end
