@@ -238,8 +238,8 @@ end
 class Knight < Piece
   attr_accessor :movement
 
-  def initialize(pos = [1, 1], move_count = 0)
-    super(pos, move_count)
+  def initialize(name, pos = [1, 1], move_count = 0)
+    super(name, pos, move_count)
   end
 end
 
@@ -247,8 +247,7 @@ class Bishop < Piece
   attr_accessor :movement
 
   def initialize(name, pos = [1, 1], move_count = 0)
-    super(pos, move_count)
-    @name = name
+    super(name, pos, move_count)
   end
 end
 
@@ -256,8 +255,7 @@ class Rook < Piece
   attr_accessor :movement
 
   def initialize(name, pos = [1, 1], move_count = 0)
-    super(pos, move_count)
-    @name = name
+    super(name, pos, move_count)
   end
 end
 
@@ -265,8 +263,7 @@ class Queen < Piece
   attr_accessor :movement
 
   def initialize(name, pos = [1, 1], move_count = 0)
-    super(pos, move_count)
-    @name = name
+    super(name, pos, move_count)
   end
 end
 
@@ -274,8 +271,7 @@ class King < Piece
   attr_accessor :movement, :checker
 
   def initialize(name, pos = [1, 1], move_count = 0)
-    super(pos, move_count)
-    @name = name
+    super(name, pos, move_count)
     @checker = nil
   end
 end
