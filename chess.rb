@@ -109,7 +109,7 @@ class Chess
   end
 
   def possible_move?(final_pos,init_pos, player)
-    possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board)
+    possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board, player)
     unless possible_moves.include?(final_pos) then return false end
     if player.in_check && removes_check?(final_pos, player) then return true end
     if player.in_check then return false end
@@ -208,14 +208,14 @@ class Pawn < Piece
     super(name, pos, move_count)
   end
 
-  def moves(board)
+  def moves(board, player)
     if @name[0] == 'W'
       moves = self.black_moves(board)
     else
       moves = self.white_moves(board)
     end
   end
-
+ #TODO: black_moves and white_movies need improvement, check if capture is not same color piece
   def black_moves(board)
     moves = []
     moves << [pos[0] + 2, pos[1]] if @move_count.zero? && board[pos[0] + 2][pos[1]] == '_'
@@ -241,6 +241,39 @@ class Knight < Piece
   def initialize(name, pos = [1, 1], move_count = 0)
     super(name, pos, move_count)
   end
+
+  def moves(board, player)
+    moves = []
+    moves << self.topside(board, player) if self.topside(board, player) != []
+    moves << self.bottomside(board, player) if self.bottomside(board, player) != []
+    moves << self.leftside(board, player) if self.leftside(board, player) != []
+    moves << self.rightside(board, player) if self.rightside(board, player) != []
+  end
+
+  def topside(board)
+    moves = []
+    moves << [pos[0] + 2, pos[1] - 1] unless nil_or_friend?(board[pos[0] + 2][pos[1] - 1], player)
+    moves << [pos[0] + 2, pos[1] + 1] unless nil_or_friend?(board[pos[0] + 2][pos[1] + 1], player)
+  end
+
+  def bottomside
+    moves = []
+    moves << [pos[0] - 2, pos[1] - 1] unless nil_or_friend?(board[pos[0] - 2][pos[1] - 1], player)
+    moves << [pos[0] - 2, pos[1] + 1] unless nil_or_friend?(board[pos[0] - 2][pos[1] + 1], player)
+  end
+
+  def rightside
+    moves = []
+    moves << [pos[0] + 1, pos[1] + 2] unless nil_or_friend?(board[pos[0] + 1][pos[1] + 2], player)
+    moves << [pos[0] - 1, pos[1] + 2] unless nil_or_friend?(board[pos[0] - 1][pos[1] + 2], player)
+  end
+
+  def leftside
+    moves = []
+    moves << [pos[0] + 1, pos[1] - 2] unless nil_or_friend?(board[pos[0] + 1][pos[1] - 2], player)
+    moves << [pos[0] - 1, pos[1] - 2] unless nil_or_friend?(board[pos[0] - 1][pos[1] - 2], player)
+  end
+
 end
 
 class Bishop < Piece
@@ -274,6 +307,10 @@ class King < Piece
     super(name, pos, move_count)
     @checker = nil
   end
+end
+
+def nil_or_friend?(pos, player)
+  pos.nil? || pos.name[0] == player.name[0]
 end
 
 chess = Chess.new.fill_board
