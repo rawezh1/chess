@@ -110,8 +110,8 @@ class Chess
 
   def possible_move?(final_pos,init_pos, player)
     possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board)
-    unless possible_moves.include?(final_pos, player) then return false end
-    if player.in_check && removes_check?(final_pos) then return true end
+    unless possible_moves.include?(final_pos) then return false end
+    if player.in_check && removes_check?(final_pos, player) then return true end
     if player.in_check then return false end
     if puts_incheck?(final_pos, player) then return false end
   end
@@ -206,7 +206,6 @@ class Pawn < Piece
 
   def initialize(name = ' ', pos = [1, 1], move_count = 0)
     super(name, pos, move_count)
-    # @movement = forward
   end
 
   def moves(board)
@@ -241,7 +240,6 @@ class Knight < Piece
 
   def initialize(pos = [1, 1], move_count = 0)
     super(pos, move_count)
-    # @movement = L-shaped
   end
 end
 
@@ -250,7 +248,6 @@ class Bishop < Piece
 
   def initialize(name, pos = [1, 1], move_count = 0)
     super(pos, move_count)
-    # @movement = digonal
     @name = name
   end
 end
@@ -260,7 +257,6 @@ class Rook < Piece
 
   def initialize(name, pos = [1, 1], move_count = 0)
     super(pos, move_count)
-    # @movement = straight
     @name = name
   end
 end
@@ -270,7 +266,6 @@ class Queen < Piece
 
   def initialize(name, pos = [1, 1], move_count = 0)
     super(pos, move_count)
-    # @movement = straight-diagonal
     @name = name
   end
 end
@@ -280,7 +275,6 @@ class King < Piece
 
   def initialize(name, pos = [1, 1], move_count = 0)
     super(pos, move_count)
-    # @movement = all-sides
     @name = name
     @checker = nil
   end
