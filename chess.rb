@@ -52,7 +52,7 @@ class Chess
   def turn(player)
     p "It is #{player.name} players turn, please select a piece by typing its row and column"
     from_pos = self.from_pos(player)
-    to_pos = self.to_pos(player,from_pos)
+    to_pos = self.to_pos(player, from_pos)
   end
 
   def from_pos(player)
@@ -208,14 +208,14 @@ class Pawn < Piece
     super(name, pos, move_count)
   end
 
-  def moves(board, player)
+  def moves(board, _player)
     if @name[0] == 'W'
-      moves = self.black_moves(board)
+      self.black_moves(board)
     else
-      moves = self.white_moves(board)
+      self.white_moves(board)
     end
   end
- #TODO: black_moves and white_movies need improvement, check if capture is not same color piece
+  # TODO: black_moves and white_movies need improvement, check if capture is not same color piece
   def black_moves(board)
     moves = []
     moves << [pos[0] + 2, pos[1]] if @move_count.zero? && board[pos[0] + 2][pos[1]] == '_'
