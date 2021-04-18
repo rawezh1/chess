@@ -215,13 +215,17 @@ class Pawn < Piece
       self.white_moves(board)
     end
   end
-  # TODO: black_moves and white_movies need improvement, check if capture is not same color piece
+  
   def black_moves(board)
     moves = []
     moves << [pos[0] + 2, pos[1]] if @move_count.zero? && board[pos[0] + 2][pos[1]] == '_'
     moves << [pos[0] + 1, pos[1]] if board[pos[0] + 1][pos[1]] == '_'
-    moves << [pos[0] + 1, pos[1] + 1] unless board[pos[0] + 1][pos[1] + 1] == '_' || board[pos[0] + 1][pos[1] + 1].nil?
-    moves << [pos[0] + 1, pos[1] - 1] unless board[pos[0] + 1][pos[1] - 1] == '_' || board[pos[0] + 1][pos[1] - 1].nil?
+    unless board[pos[0] + 1][pos[1] + 1] == '_' || nil_or_friend?(board[pos[0] + 1][pos[1] + 1], player)
+      moves << [pos[0] + 1, pos[1] + 1]
+    end
+    unless board[pos[0] + 1][pos[1] - 1] == '_' || nil_or_friend?(board[pos[0] + 1][pos[1] - 1], player)
+      moves << [pos[0] + 1, pos[1] - 1]
+    end
     moves
   end
 
