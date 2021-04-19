@@ -295,6 +295,17 @@ class Bishop < Piece
   end
 
   def ne_diagonal(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      r += 1 # NW diagonal rank
+      f -= 1 # NW diagonal file
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
   end
 end
 
