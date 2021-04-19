@@ -387,6 +387,19 @@ class Rook < Piece
       return moves unless board[r][f] == '_'
     end
   end
+
+  def left(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      f -= 1 # left file
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
 end
 
 class Queen < Piece
