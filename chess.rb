@@ -234,7 +234,7 @@ class Pawn < Piece
     moves << [pos[0] - 2, pos[1]] if @move_count.zero? && board[pos[0] - 2][pos[1]] == '_'
     moves << [pos[0] - 1, pos[1]] if board[pos[0] + 1][pos[1]] == '_'
     unless board[pos[0] - 1][pos[1] + 1] == '_' || nil_or_friend?(board[pos[0] - 1][pos[1] + 1], player)
-      moves << [pos[0] - 1, pos[1] + 1] 
+      moves << [pos[0] - 1, pos[1] + 1]
     end
     unless board[pos[0] - 1][pos[1] - 1] == '_' || nil_or_friend?(board[pos[0] - 1][pos[1] - 1], player)
       moves << [pos[0] - 1, pos[1] - 1]
@@ -281,7 +281,6 @@ class Knight < Piece
     moves << [pos[0] + 1, pos[1] - 2] unless nil_or_friend?(board[pos[0] + 1][pos[1] - 2], player)
     moves << [pos[0] - 1, pos[1] - 2] unless nil_or_friend?(board[pos[0] - 1][pos[1] - 2], player)
   end
-
 end
 
 class Bishop < Piece
@@ -289,6 +288,13 @@ class Bishop < Piece
 
   def initialize(name, pos = [1, 1], move_count = 0)
     super(name, pos, move_count)
+  end
+
+  def moves(board, player)
+    ne_diagonal(board, player) + nw_diagonal(board, player) + se_diagonal(board, player) + sw_diagonal(board, player)
+  end
+
+  def ne_diagonal(board, player)
   end
 end
 
