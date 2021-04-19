@@ -321,6 +321,34 @@ class Bishop < Piece
       return moves unless board[r][f] == '_'
     end
   end
+
+  def sw_diagonal(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      r -= 1 # SW diagonal rank
+      f -= 1 # SW diagonal file
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
+
+  def se_diagonal(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      r -= 1 # SE diagonal rank
+      f += 1 # SE diagonal file
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
 end
 
 class Rook < Piece
