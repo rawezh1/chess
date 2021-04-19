@@ -357,6 +357,10 @@ class Rook < Piece
   def initialize(name, pos = [1, 1], move_count = 0)
     super(name, pos, move_count)
   end
+
+  def moves(board, player)
+    up(board, player) + down(board, player) + left(board, player) + right(board, player)
+  end
 end
 
 class Queen < Piece
