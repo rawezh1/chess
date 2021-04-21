@@ -568,6 +568,11 @@ class King < Piece
     moves << [r - 1, f + 1] unless nil_or_friend?(board[r - 1][f + 1], player)
     moves << [r - 1, f - 1] unless nil_or_friend?(board[r - 1][f - 1], player)
   end
+
+  def castling_moves(board, player)
+    return [] if board[pos[0]][pos[1]].move_count != 0
+    king_castle(board, player) + queen_castle(board, player)
+  end
 end
 
 def nil_or_friend?(piece, player)
