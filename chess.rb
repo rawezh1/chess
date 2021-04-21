@@ -427,6 +427,62 @@ class Queen < Piece
   end
 
   def flat_moves(board, player)
+    up(board, player) + down(board, player) + left(board, player) + right(board, player)
+  end
+
+  def up(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      r += 1 # Upper rank
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
+
+  def down(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      r -= 1 # lower rank
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
+
+  def left(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      f -= 1 # left file
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
+
+  def right(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      f -= 1 # right file
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
+
+  def diagonal_moves(board, player)
   end
 end
 
