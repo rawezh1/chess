@@ -554,6 +554,20 @@ class King < Piece
   def moves(board, player)
     one_moves(board, player) + castling_moves(board, player)
   end
+
+  def one_moves(board, player)
+    r = pos[0]
+    f = pos[1]
+    moves = []
+    moves << [r + 1, f] unless nil_or_friend?(board[r + 1][f], player)
+    moves << [r - 1, f] unless nil_or_friend?(board[r - 1][f], player)
+    moves << [r, f + 1] unless nil_or_friend?(board[r][f + 1], player)
+    moves << [r, f - 1] unless nil_or_friend?(board[r][f - 1], player)
+    moves << [r + 1, f + 1] unless nil_or_friend?(board[r + 1][f + 1], player)
+    moves << [r + 1, f - 1] unless nil_or_friend?(board[r + 1][f - 1], player)
+    moves << [r - 1, f + 1] unless nil_or_friend?(board[r - 1][f + 1], player)
+    moves << [r - 1, f - 1] unless nil_or_friend?(board[r - 1][f - 1], player)
+  end
 end
 
 def nil_or_friend?(piece, player)
