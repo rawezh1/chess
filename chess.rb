@@ -550,6 +550,10 @@ class King < Piece
     super(name, pos, move_count)
     @checker = nil
   end
+
+  def moves(board, player)
+    one_moves(board, player) + castling_moves(board, player)
+  end
 end
 
 def nil_or_friend?(piece, player)
