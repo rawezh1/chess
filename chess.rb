@@ -485,6 +485,62 @@ class Queen < Piece
   def diagonal_moves(board, player)
     ne_diagonal(board, player) + nw_diagonal(board, player) + se_diagonal(board, player) + sw_diagonal(board, player)
   end
+
+  def nw_diagonal(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      r += 1 # NW diagonal rank
+      f -= 1 # NW diagonal file
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
+
+  def ne_diagonal(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      r += 1 # NE diagonal rank
+      f += 1 # NE diagonal file
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
+
+  def sw_diagonal(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      r -= 1 # SW diagonal rank
+      f -= 1 # SW diagonal file
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
+
+  def se_diagonal(board, player)
+    r = pos[0] # initial rank of piece
+    f = pos[1] # initial file of piece
+    moves = []
+    loop do
+      r -= 1 # SE diagonal rank
+      f += 1 # SE diagonal file
+      return moves if nil_or_friend?(board[r][f], player)
+
+      moves << [r, f]
+      return moves unless board[r][f] == '_'
+    end
+  end
 end
 
 class King < Piece
