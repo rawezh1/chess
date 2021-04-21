@@ -483,6 +483,7 @@ class Queen < Piece
   end
 
   def diagonal_moves(board, player)
+    ne_diagonal(board, player) + nw_diagonal(board, player) + se_diagonal(board, player) + sw_diagonal(board, player)
   end
 end
 
