@@ -421,6 +421,13 @@ class Queen < Piece
   def initialize(name, pos = [1, 1], move_count = 0)
     super(name, pos, move_count)
   end
+
+  def moves(board, player)
+    diagonal_moves(board, player) + flat_moves(board, player)
+  end
+
+  def flat_moves(board, player)
+  end
 end
 
 class King < Piece
