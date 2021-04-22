@@ -571,7 +571,19 @@ class King < Piece
 
   def castling_moves(board, player)
     return [] if board[pos[0]][pos[1]].move_count != 0
+
     king_castle(board, player) + queen_castle(board, player)
+  end
+
+  def king_castle(board, player)
+    r = pos[0]
+    f = pos[1]
+    moves = []
+    moves if board[r][f + 3] == '_' || board[r][f + 3].name[1] != 'R'
+    moves unless board[r][f + 1] == '_' && board[r][f + 2] == '_'
+    if !player.in_check && in_check?(board, player, [r, f + 1]) && in_check?(board, player, [r, f + 1])
+      moves << [r, f + 2]
+    end
   end
 end
 
@@ -591,3 +603,4 @@ chess1 = chess.board.map do |array|
 end
 p chess1
 chess.play
+# TODO: is player parameter redundant?, is passing rank and file better?
