@@ -577,12 +577,21 @@ class King < Piece
 
   def king_castle(board, player)
     r = pos[0]
-    f = pos[1]
     moves = []
-    moves if board[r][f + 3] == '_' || board[r][f + 3].name[1] != 'R'
-    moves unless board[r][f + 1] == '_' && board[r][f + 2] == '_'
-    if !player.in_check && in_check?(board, player, [r, f + 1]) && in_check?(board, player, [r, f + 1])
-      moves << [r, f + 2]
+    moves if board[r][7] == '_' || board[r][7].name[1] != 'R'
+    moves unless board[r][5] == '_' && board[r][6] == '_'
+    if !player.in_check && !in_check?(board, player, [r, 5]) && !in_check?(board, player, [r, 6])
+      moves << [r, 6]
+    end
+  end
+
+  def queen_castle(board, player)
+    r = pos[0]
+    moves = []
+    moves if board[r][0] == '_' || board[r][0].name[1] != 'R'
+    moves unless board[r][1] == '_' && board[r][2] == '_' && board[r][3] == '_'
+    if !player.in_check && !in_check?(board, player, [r, 1]) && !in_check?(board, player, [r, 2]) && !in_check?(board, player, [r, 3])
+      moves << [r, 2]
     end
   end
 end
