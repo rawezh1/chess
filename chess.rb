@@ -587,6 +587,22 @@ class King < Piece
   end
 end
 
+def in_check?(board, player, pos)
+  if player.name[0] == 'W'
+    other_player = Player.new('Black')
+  else
+    other_player = Player.new('White')
+  end
+  board.each do |arr|
+    arr.each do |piece|
+      next if piece == '_'
+      next if piece.name[0] == player.name[0]
+      return true if piece.moves(board, other_player).include?(pos)
+    end
+  end
+  false
+end
+
 def nil_or_friend?(piece, player)
   piece.nil? || piece.name[0] == player.name[0]
 end
