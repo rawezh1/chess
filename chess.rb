@@ -111,9 +111,9 @@ class Chess
   def possible_move?(final_pos,init_pos, player)
     possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board, player)
     unless possible_moves.include?(final_pos) then return false end
-    if player.in_check && removes_check?(final_pos, player) then return true end
-    if player.in_check then return false end
+    if player.in_check && !removes_check?(final_pos, player) then return false end
     if puts_incheck?(final_pos, player) then return false end
+    true
   end
 
   def removes_check?(final_pos, player)
