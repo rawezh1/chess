@@ -45,6 +45,9 @@ class Chess
   def play
     # until self.finished?
     turn(@player1)
+    game_over?(@board, @player2)
+    turn(@player2)
+    game_over?(@board, @player1)
     # black player turn
     # end
   end
