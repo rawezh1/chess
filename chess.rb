@@ -108,11 +108,11 @@ class Chess
     end
   end
 
-  def possible_move?(final_pos,init_pos, player)
+  def possible_move?(final_pos, init_pos, player)
     possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board, player)
     unless possible_moves.include?(final_pos) then return false end
     if player.in_check && !removes_check?(final_pos, player) then return false end
-    if puts_incheck?(final_pos, player) then return false end
+    if puts_incheck?(init_pos, player) then return false end
     true
   end
 
@@ -178,6 +178,12 @@ class Chess
         final_pos[0].between?(king.checker.pos[0], king.pos[0]) && final_pos[1].between?(king.checker.pos[1], king.pos[1])
       end
     end
+  end
+
+  def puts_incheck?(init_pos, player)
+    new_board = @board
+    new_board[init_pos[0]][init_pos[1]] = '_'
+    in_check?(new_board, player, pos_of(King.new("#{player.name[0]}Ki")))
   end
 end
 
