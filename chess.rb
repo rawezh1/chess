@@ -44,7 +44,7 @@ class Chess
 
   def play
     # until self.finished?
-    self.turn(player1)
+    turn(@player1)
     # black player turn
     # end
   end
@@ -53,6 +53,7 @@ class Chess
     p "It is #{player.name} players turn, please select a piece by typing its row and column"
     from_pos = self.from_pos(player)
     to_pos = self.to_pos(player, from_pos)
+    apply_move(from_pos, to_pos, player)
   end
 
   def from_pos(player)
@@ -184,6 +185,15 @@ class Chess
     new_board = @board
     new_board[init_pos[0]][init_pos[1]] = '_'
     in_check?(new_board, player, pos_of(King.new("#{player.name[0]}Ki")))
+  end
+
+  def apply_move(init_pos, final_pos, player)
+    @board[init_pos[0]][init_pos[1]].pos = [final_pos[0], final_pos[1]]
+    @board[final_pos[0]][final_pos[1]] = @board[init_pos[0]][init_pos[1]]
+    @board[init_pos[0]][init_pos[1]] = '_'
+    ops_player = 
+    in_check = in_check?(@board, player, )
+    if in_check?(@board, player)
   end
 end
 
@@ -586,7 +596,7 @@ class King < Piece
     moves = []
     moves if board[r][7] == '_' || board[r][7].name[1] != 'R'
     moves unless board[r][5] == '_' && board[r][6] == '_'
-    if !player.in_check && !in_check?(board, player, [r, 5]) && !in_check?(board, player, [r, 6])
+    if !player.in_check && !in_check?(board, player, [r, 5])[0] && !in_check?(board, player, [r, 6])[0]
       moves << [r, 6]
     end
   end
@@ -596,7 +606,7 @@ class King < Piece
     moves = []
     moves if board[r][0] == '_' || board[r][0].name[1] != 'R'
     moves unless board[r][1] == '_' && board[r][2] == '_' && board[r][3] == '_'
-    if !player.in_check && !in_check?(board, player, [r, 1]) && !in_check?(board, player, [r, 2]) && !in_check?(board, player, [r, 3])
+    if !player.in_check && !in_check?(board, player, [r, 1])[0] && !in_check?(board, player, [r, 2])[0] && !in_check?(board, player, [r, 3])[0]
       moves << [r, 2]
     end
   end
@@ -612,10 +622,10 @@ def in_check?(board, player, pos)
     arr.each do |piece|
       next if piece == '_'
       next if piece.name[0] == player.name[0]
-      return true if piece.moves(board, other_player).include?(pos)
+      return [true, piece.pos] if piece.moves(board, other_player).include?(pos)
     end
   end
-  false
+  [false, []]
 end
 
 def nil_or_friend?(piece, player)
