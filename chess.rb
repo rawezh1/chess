@@ -191,9 +191,13 @@ class Chess
     @board[init_pos[0]][init_pos[1]].pos = [final_pos[0], final_pos[1]]
     @board[final_pos[0]][final_pos[1]] = @board[init_pos[0]][init_pos[1]]
     @board[init_pos[0]][init_pos[1]] = '_'
-    ops_player = 
-    in_check = in_check?(@board, player, )
-    if in_check?(@board, player)
+    oppos_player = player.name[0] == 'W' ? player2 : player1
+    king_pos = pos_of(King.new("#{oppos_player.name[0]}Ki"))
+    in_check = in_check?(@board, oppos_player, king_pos)
+    if in_check[0]
+      @board[king_pos[0]][king_pos[1]].checker = @board[in_check[1][0]][in_check[1][1]]
+      oppos_player.in_check = true
+    end
   end
 end
 
