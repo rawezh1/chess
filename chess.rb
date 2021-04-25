@@ -202,6 +202,16 @@ class Chess
       oppos_player.in_check = true
     end
   end
+
+  def game_over?(board, player)
+    if no_legal_moves?(board, player)
+      if player.in_check
+        puts "Checkmate! #{player.name} player lost!"
+      else
+        puts 'Stalemate'
+      end
+    end
+  end
 end
 
 class Player
@@ -651,4 +661,4 @@ chess1 = chess.board.map do |array|
 end
 p chess1
 chess.play
-# TODO: is player parameter redundant?, is passing rank and file better?
+# TODO: is player parameter redundant?, is passing rank and file better?, add en passant, promotion
