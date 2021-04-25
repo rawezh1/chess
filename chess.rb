@@ -45,7 +45,7 @@ class Chess
   def play
     # until self.finished?
     turn(@player1)
-    game_over?(@board, @player2)
+    if game_over?(@board, @player2)
     turn(@player2)
     game_over?(@board, @player1)
     # black player turn
@@ -207,10 +207,13 @@ class Chess
     if no_legal_moves?(board, player)
       if player.in_check
         puts "Checkmate! #{player.name} player lost!"
+        true
       else
         puts 'Stalemate'
+        true
       end
     end
+    false
   end
 
   def no_legal_moves?(board, player)
