@@ -212,6 +212,16 @@ class Chess
       end
     end
   end
+
+  def no_legal_moves?(board, player)
+    board.each do |arr|
+      arr.each do |piece|
+        next if piece == '_' || piece.name[0] != player.name[0]
+        return false unless piece.moves.empty?
+      end
+    end
+    true
+  end
 end
 
 class Player
