@@ -20,25 +20,25 @@ class Chess
 
   def fill_board
     # fill black side
-    @board[1] = Array.new(8).fill { |i| Pawn.new('BP', [1, i]) }
-    @board[0][0] = Rook.new('BR', [0, 0])
-    @board[0][7] = Rook.new('BR', [0, 7])
-    @board[0][1] = Knight.new('BK', [0, 1])
-    @board[0][6] = Knight.new('BK', [0, 6])
-    @board[0][2] = Bishop.new('BB', [0, 2])
-    @board[0][5] = Bishop.new('BB', [0, 5])
-    @board[0][3] = Queen.new('BQ', [0, 3])
-    @board[0][4] = King.new('BKi', [0, 4])
+    @board[1] = Array.new(8).fill { |i| Pawn.new('BP', '♟︎', [1, i]) }
+    @board[0][0] = Rook.new('BR', '♜', [0, 0])
+    @board[0][7] = Rook.new('BR', '♜', [0, 7])
+    @board[0][1] = Knight.new('BK', '♞', [0, 1])
+    @board[0][6] = Knight.new('BK', '♞', [0, 6])
+    @board[0][2] = Bishop.new('BB', '♝', [0, 2])
+    @board[0][5] = Bishop.new('BB', '♝', [0, 5])
+    @board[0][3] = Queen.new('BQ', '♛', [0, 3])
+    @board[0][4] = King.new('BKi', '♚', [0, 4])
     # fill white side
-    @board[6] = Array.new(8).fill { |i| Pawn.new('WP', [6, i]) }
-    @board[7][0] = Rook.new('WR', [7, 0])
-    @board[7][7] = Rook.new('WR', [7, 7])
-    @board[7][1] = Knight.new('WK', [7, 1])
-    @board[7][6] = Knight.new('WK', [7, 6])
-    @board[7][2] = Bishop.new('WB', [7, 2])
-    @board[7][5] = Bishop.new('WB', [7, 5])
-    @board[7][3] = Queen.new('WQ', [7, 3])
-    @board[7][4] = King.new('WKi', [7, 4])
+    @board[6] = Array.new(8).fill { |i| Pawn.new('WP', '♙', [6, i]) }
+    @board[7][0] = Rook.new('WR', '♖', [7, 0])
+    @board[7][7] = Rook.new('WR', '♖', [7, 7])
+    @board[7][1] = Knight.new('WK', '♘', [7, 1])
+    @board[7][6] = Knight.new('WK', '♘', [7, 6])
+    @board[7][2] = Bishop.new('WB', '♗', [7, 2])
+    @board[7][5] = Bishop.new('WB', '♗', [7, 5])
+    @board[7][3] = Queen.new('WQ', '♕', [7, 3])
+    @board[7][4] = King.new('WKi', '♔', [7, 4])
     self
   end
 
@@ -238,20 +238,20 @@ class Player
 end
 
 class Piece
-  attr_accessor :move_count, :pos, :name
+  attr_accessor :move_count, :pos, :name, :symbol
 
-  def initialize(name, pos = [1, 1], move_count = 0)
+  def initialize(name, symbol, pos = [1, 1], move_count = 0)
     @pos = pos
     @move_count = move_count
     @name = name
+    @symbol = symbol
   end
 end
 
 class Pawn < Piece
-  attr_accessor :movement, :name
 
-  def initialize(name = ' ', pos = [1, 1], move_count = 0)
-    super(name, pos, move_count)
+  def initialize(name, symbol, pos = [1, 1], move_count = 0)
+    super(name, symbol, pos, move_count)
   end
 
   def moves(board, _player)
@@ -290,10 +290,9 @@ class Pawn < Piece
 end
 
 class Knight < Piece
-  attr_accessor :movement
 
-  def initialize(name, pos = [1, 1], move_count = 0)
-    super(name, pos, move_count)
+  def initialize(name, symbol, pos = [1, 1], move_count = 0)
+    super(name, symbol, pos, move_count)
   end
 
   def moves(board, player)
@@ -330,10 +329,9 @@ class Knight < Piece
 end
 
 class Bishop < Piece
-  attr_accessor :movement
 
-  def initialize(name, pos = [1, 1], move_count = 0)
-    super(name, pos, move_count)
+  def initialize(name, symbol, pos = [1, 1], move_count = 0)
+    super(name, symbol, pos, move_count)
   end
 
   def moves(board, player)
@@ -398,10 +396,9 @@ class Bishop < Piece
 end
 
 class Rook < Piece
-  attr_accessor :movement
 
-  def initialize(name, pos = [1, 1], move_count = 0)
-    super(name, pos, move_count)
+  def initialize(name, symbol, pos = [1, 1], move_count = 0)
+    super(name, symbol, pos, move_count)
   end
 
   def moves(board, player)
@@ -462,10 +459,9 @@ class Rook < Piece
 end
 
 class Queen < Piece
-  attr_accessor :movement
 
-  def initialize(name, pos = [1, 1], move_count = 0)
-    super(name, pos, move_count)
+  def initialize(name, symbol, pos = [1, 1], move_count = 0)
+    super(name, symbol, pos, move_count)
   end
 
   def moves(board, player)
@@ -590,10 +586,10 @@ class Queen < Piece
 end
 
 class King < Piece
-  attr_accessor :movement, :checker
+  attr_accessor :checker
 
-  def initialize(name, pos = [1, 1], move_count = 0)
-    super(name, pos, move_count)
+  def initialize(name, symbol, pos = [1, 1], move_count = 0)
+    super(name, symbol, pos, move_count)
     @checker = nil
   end
 
@@ -674,4 +670,4 @@ chess1 = chess.board.map do |array|
 end
 p chess1
 chess.play
-# TODO: is player parameter redundant?, is passing rank and file better?, add en passant, promotion
+# TODO: Add print board,is player parameter redundant?, is passing rank and file better?, add en passant, promotion
