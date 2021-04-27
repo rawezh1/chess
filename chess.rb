@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'pry'
 # Adds check if string is integer to String class
 class String
   def is_i?
@@ -20,25 +21,25 @@ class Chess
 
   def fill_board
     # fill black side
-    @board[1] = Array.new(8).fill { |i| Pawn.new('BP', '♟︎', [1, i]) }
-    @board[0][0] = Rook.new('BR', '♜', [0, 0])
-    @board[0][7] = Rook.new('BR', '♜', [0, 7])
-    @board[0][1] = Knight.new('BK', '♞', [0, 1])
-    @board[0][6] = Knight.new('BK', '♞', [0, 6])
-    @board[0][2] = Bishop.new('BB', '♝', [0, 2])
-    @board[0][5] = Bishop.new('BB', '♝', [0, 5])
-    @board[0][3] = Queen.new('BQ', '♛', [0, 3])
-    @board[0][4] = King.new('BKi', '♚', [0, 4])
+    @board[1] = Array.new(8).fill { |i| Pawn.new('BP', '♙', [1, i]) }
+    @board[0][0] = Rook.new('BR', '♖', [0, 0])
+    @board[0][7] = Rook.new('BR', '♖', [0, 7])
+    @board[0][1] = Knight.new('BK', '♘', [0, 1])
+    @board[0][6] = Knight.new('BK', '♘', [0, 6])
+    @board[0][2] = Bishop.new('BB', '♗', [0, 2])
+    @board[0][5] = Bishop.new('BB', '♗', [0, 5])
+    @board[0][3] = Queen.new('BQ', '♕', [0, 3])
+    @board[0][4] = King.new('BKi', '♔', [0, 4])
     # fill white side
-    @board[6] = Array.new(8).fill { |i| Pawn.new('WP', '♙', [6, i]) }
-    @board[7][0] = Rook.new('WR', '♖', [7, 0])
-    @board[7][7] = Rook.new('WR', '♖', [7, 7])
-    @board[7][1] = Knight.new('WK', '♘', [7, 1])
-    @board[7][6] = Knight.new('WK', '♘', [7, 6])
-    @board[7][2] = Bishop.new('WB', '♗', [7, 2])
-    @board[7][5] = Bishop.new('WB', '♗', [7, 5])
-    @board[7][3] = Queen.new('WQ', '♕', [7, 3])
-    @board[7][4] = King.new('WKi', '♔', [7, 4])
+    @board[6] = Array.new(8).fill { |i| Pawn.new('WP', '♟︎', [6, i]) }
+    @board[7][0] = Rook.new('WR', '♜', [7, 0])
+    @board[7][7] = Rook.new('WR', '♜', [7, 7])
+    @board[7][1] = Knight.new('WK', '♞', [7, 1])
+    @board[7][6] = Knight.new('WK', '♞', [7, 6])
+    @board[7][2] = Bishop.new('WB', '♝', [7, 2])
+    @board[7][5] = Bishop.new('WB', '♝', [7, 5])
+    @board[7][3] = Queen.new('WQ', '♛', [7, 3])
+    @board[7][4] = King.new('WKi', '♚', [7, 4])
     self
   end
 
@@ -48,7 +49,7 @@ class Chess
       return if game_over?(@board, @player2)
 
       turn(@player2)
-      game_over?(@board, @player1)
+      return if game_over?(@board, @player1)
     end
   end
 
@@ -69,6 +70,7 @@ class Chess
   end
 
   def invalid_choice?(choice, player)
+    #binding.pry
     if choice.length != 2 || !choice[0].is_i? || !choice[1].is_i?
       puts 'Invalid input, please type a correct value'
       return true
@@ -83,12 +85,16 @@ class Chess
     elsif @board[choice[0]][choice[1]].name[0] != player.name[0]
       puts 'Invalid input, please type a correct value'
       true
+    elsif @board[choice[0]][choice[1]].moves(@board, player).empty?
+      puts 'Invalid input, please type a correct value'
+      true
     else
       false
     end
   end
 
   def to_pos(player, init_pos)
+    p 'Please select a position to move the piece to by typing its row and column'
     loop do
       choice = gets.chomp.split('')
       if invalid_move?(choice, player.name[0], init_pos) then next end
@@ -411,6 +417,7 @@ class Rook < Piece
     moves = []
     loop do
       r += 1 # Upper rank
+      binding.pry
       return moves if nil_or_friend?(board[r][f], player)
 
       moves << [r, f]
@@ -660,14 +667,14 @@ end
 
 chess = Chess.new.fill_board
 chess1 = chess.board.map do |array|
-  array.map do |element|
+  arr = array.map do |element|
     if element.class == String
       element
     else
-      element.name
+      element.symbol
     end
   end
+  pp arr
 end
-p chess1
 chess.play
 # TODO: Add print board,is player parameter redundant?, is passing rank and file better?, add en passant, promotion
