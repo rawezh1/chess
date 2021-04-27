@@ -309,25 +309,25 @@ class Knight < Piece
     moves << rightside(board, player) if rightside(board, player) != []
   end
 
-  def topside(board)
+  def topside(board, player)
     moves = []
     moves << [pos[0] + 2, pos[1] - 1] unless nil_or_friend?(board[pos[0] + 2][pos[1] - 1], player)
     moves << [pos[0] + 2, pos[1] + 1] unless nil_or_friend?(board[pos[0] + 2][pos[1] + 1], player)
   end
 
-  def bottomside
+  def bottomside(board, player)
     moves = []
     moves << [pos[0] - 2, pos[1] - 1] unless nil_or_friend?(board[pos[0] - 2][pos[1] - 1], player)
     moves << [pos[0] - 2, pos[1] + 1] unless nil_or_friend?(board[pos[0] - 2][pos[1] + 1], player)
   end
 
-  def rightside
+  def rightside(board, player)
     moves = []
     moves << [pos[0] + 1, pos[1] + 2] unless nil_or_friend?(board[pos[0] + 1][pos[1] + 2], player)
     moves << [pos[0] - 1, pos[1] + 2] unless nil_or_friend?(board[pos[0] - 1][pos[1] + 2], player)
   end
 
-  def leftside
+  def leftside(board, player)
     moves = []
     moves << [pos[0] + 1, pos[1] - 2] unless nil_or_friend?(board[pos[0] + 1][pos[1] - 2], player)
     moves << [pos[0] - 1, pos[1] - 2] unless nil_or_friend?(board[pos[0] - 1][pos[1] - 2], player)
@@ -417,7 +417,7 @@ class Rook < Piece
     moves = []
     loop do
       r += 1 unless r == 7 # Upper rank
-      binding.pry
+      #binding.pry
       return moves if nil_or_friend?(board[r][f], player)
 
       moves << [r, f]
