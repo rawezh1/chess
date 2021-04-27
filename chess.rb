@@ -690,6 +690,8 @@ def in_check?(board, player, pos)
 end
 
 def nil_or_friend?(piece, player)
+  return false if piece == '_'
+
   piece.nil? || piece.name[0] == player.name[0]
 end
 
