@@ -284,7 +284,7 @@ class Pawn < Piece
   def white_moves(board)
     moves = []
     moves << [pos[0] - 2, pos[1]] if @move_count.zero? && board[pos[0] - 2][pos[1]] == '_'
-    moves << [pos[0] - 1, pos[1]] if board[pos[0] + 1][pos[1]] == '_'
+    moves << [pos[0] - 1, pos[1]] if board[pos[0] - 1][pos[1]] == '_'
     unless board[pos[0] - 1][pos[1] + 1] == '_' || nil_or_friend?(board[pos[0] - 1][pos[1] + 1], player)
       moves << [pos[0] - 1, pos[1] + 1]
     end
@@ -303,10 +303,10 @@ class Knight < Piece
 
   def moves(board, player)
     moves = []
-    moves << self.topside(board, player) if self.topside(board, player) != []
-    moves << self.bottomside(board, player) if self.bottomside(board, player) != []
-    moves << self.leftside(board, player) if self.leftside(board, player) != []
-    moves << self.rightside(board, player) if self.rightside(board, player) != []
+    moves << topside(board, player) if topside(board, player) != []
+    moves << bottomside(board, player) if bottomside(board, player) != []
+    moves << leftside(board, player) if leftside(board, player) != []
+    moves << rightside(board, player) if rightside(board, player) != []
   end
 
   def topside(board)
@@ -349,8 +349,8 @@ class Bishop < Piece
     f = pos[1] # initial file of piece
     moves = []
     loop do
-      r += 1 # NW diagonal rank
-      f -= 1 # NW diagonal file
+      r += 1 unless r == 7 # NW diagonal rank
+      f -= 1 unless f.zero? # NW diagonal file
       return moves if nil_or_friend?(board[r][f], player)
 
       moves << [r, f]
@@ -363,8 +363,8 @@ class Bishop < Piece
     f = pos[1] # initial file of piece
     moves = []
     loop do
-      r += 1 # NE diagonal rank
-      f += 1 # NE diagonal file
+      r += 1 unless r == 7 # NE diagonal rank
+      f += 1 unless f == 7 # NE diagonal file
       return moves if nil_or_friend?(board[r][f], player)
 
       moves << [r, f]
@@ -377,8 +377,8 @@ class Bishop < Piece
     f = pos[1] # initial file of piece
     moves = []
     loop do
-      r -= 1 # SW diagonal rank
-      f -= 1 # SW diagonal file
+      r -= 1 unless r.zero? # SW diagonal rank
+      f -= 1 unless r.zero? # SW diagonal file
       return moves if nil_or_friend?(board[r][f], player)
 
       moves << [r, f]
@@ -391,8 +391,8 @@ class Bishop < Piece
     f = pos[1] # initial file of piece
     moves = []
     loop do
-      r -= 1 # SE diagonal rank
-      f += 1 # SE diagonal file
+      r -= 1 unless r.zero? # SE diagonal rank
+      f += 1 unless f == 7 # SE diagonal file
       return moves if nil_or_friend?(board[r][f], player)
 
       moves << [r, f]
@@ -416,7 +416,7 @@ class Rook < Piece
     f = pos[1] # initial file of piece
     moves = []
     loop do
-      r += 1 # Upper rank
+      r += 1 unless r == 7 # Upper rank
       binding.pry
       return moves if nil_or_friend?(board[r][f], player)
 
@@ -430,7 +430,7 @@ class Rook < Piece
     f = pos[1] # initial file of piece
     moves = []
     loop do
-      r -= 1 # lower rank
+      r -= 1 unless r.zero? # lower rank
       return moves if nil_or_friend?(board[r][f], player)
 
       moves << [r, f]
@@ -443,7 +443,7 @@ class Rook < Piece
     f = pos[1] # initial file of piece
     moves = []
     loop do
-      f -= 1 # left file
+      f -= 1 unless f.zero? # left file
       return moves if nil_or_friend?(board[r][f], player)
 
       moves << [r, f]
@@ -456,7 +456,7 @@ class Rook < Piece
     f = pos[1] # initial file of piece
     moves = []
     loop do
-      f -= 1 # right file
+      f += 1 unless f == 7 # right file
       return moves if nil_or_friend?(board[r][f], player)
 
       moves << [r, f]
