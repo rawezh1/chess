@@ -97,7 +97,7 @@ class Chess
     p 'Please select a position to move the piece to by typing its row and column'
     loop do
       choice = gets.chomp.split('')
-      if invalid_move?(choice, player.name[0], init_pos) then next end
+      if invalid_move?(choice, player, init_pos) then next end
 
       return choice.map(&:to_i)
     end
@@ -303,10 +303,7 @@ class Knight < Piece
 
   def moves(board, player)
     moves = []
-    moves << topside(board, player) if topside(board, player) != []
-    moves << bottomside(board, player) if bottomside(board, player) != []
-    moves << leftside(board, player) if leftside(board, player) != []
-    moves << rightside(board, player) if rightside(board, player) != []
+    moves + topside(board, player) + bottomside(board, player) + leftside(board, player) + rightside(board, player)
   end
 
   def bottomside(board, player)
