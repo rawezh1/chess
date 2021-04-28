@@ -411,17 +411,16 @@ class King < Piece
   end
 
   def one_moves(board, player)
-    r = pos[0]
-    f = pos[1]
-    moves = []
-    moves << [r + 1, f] unless nil_or_friend?(board[r + 1][f], player)
-    moves << [r - 1, f] unless nil_or_friend?(board[r - 1][f], player)
-    moves << [r, f + 1] unless nil_or_friend?(board[r][f + 1], player)
-    moves << [r, f - 1] unless nil_or_friend?(board[r][f - 1], player)
-    moves << [r + 1, f + 1] unless nil_or_friend?(board[r + 1][f + 1], player)
-    moves << [r + 1, f - 1] unless nil_or_friend?(board[r + 1][f - 1], player)
-    moves << [r - 1, f + 1] unless nil_or_friend?(board[r - 1][f + 1], player)
-    moves << [r - 1, f - 1] unless nil_or_friend?(board[r - 1][f - 1], player)
+    diagonal_moves(board, player) + straight_moves(board, player)
+  end
+
+  def straight_moves(board, player)
+    up(board, player, self, 1) + down(board, player, self, 1) + left(board, player, self, 1) + right(board, player, self, 1)
+  end
+
+  def diagonal_moves(board, player)
+    north = ne_diag(board, player, self, 1) + nw_diag(board, player, self, 1)
+    north + se_diag(board, player, self, 1) + sw_diag(board, player, self, 1)
   end
 
   def castling_moves(board, player)
