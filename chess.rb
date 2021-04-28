@@ -301,60 +301,43 @@ class Knight < Piece
   end
 
   def moves(board, player)
-    moves = []
-    moves + topside(board, player) + bottomside(board, player) + leftside(board, player) + rightside(board, player)
+    topside(board, player) + bottomside(board, player) + leftside(board, player) + rightside(board, player)
   end
 
   def bottomside(board, player)
     moves = []
     r = pos[0]
     f = pos[1]
-    if r <= 5 && f >= 1
-      moves << [r + 2, f - 1] unless nil_or_friend?(board[r + 2][f - 1], player)
-    elsif r <= 5 && f <= 6
-      moves << [r + 2, f + 1] unless nil_or_friend?(board[r + 2][f + 1], player)
-    else
-      moves
-    end
+    moves << [r + 2, f - 1] if r <= 5 && f >= 1 && !nil_or_friend?(board[r + 2][f - 1], player)
+    moves << [r + 2, f + 1] if r <= 5 && f <= 6 && !nil_or_friend?(board[r + 2][f + 1], player)
+    moves
   end
 
   def topside(board, player)
     moves = []
     r = pos[0]
     f = pos[1]
-    if r >= 2 && f >= 1
-      moves << [r - 2, f - 1] unless nil_or_friend?(board[r - 2][f - 1], player)
-    elsif r >= 2 && f <= 6
-      moves << [r - 2, f + 1] unless nil_or_friend?(board[r - 2][f + 1], player)
-    else
-      moves
-    end
+    moves << [r - 2, f - 1] if r >= 2 && f >= 1 && !nil_or_friend?(board[r - 2][f - 1], player) 
+    moves << [r - 2, f + 1] if r >= 2 && f <= 6 && nil_or_friend?(board[r - 2][f + 1], player)
+    moves
   end
 
   def rightside(board, player)
     moves = []
     r = pos[0]
     f = pos[1]
-    if r <= 6 && f <= 5
-      moves << [r + 1, f + 2] unless nil_or_friend?(board[r + 1][f + 2], player)
-    elsif r >= 1 && f <= 5
-      moves << [r - 1, f + 2] unless nil_or_friend?(board[r - 1][f + 2], player)
-    else
-      moves
-    end
+    moves << [r + 1, f + 2] if r <= 6 && f <= 5 && !nil_or_friend?(board[r + 1][f + 2], player)
+    moves << [r - 1, f + 2] if r >= 1 && f <= 5 && !nil_or_friend?(board[r - 1][f + 2], player)
+    moves
   end
 
   def leftside(board, player)
     moves = []
     r = pos[0]
     f = pos[1]
-    if r <= 6 && f >= 2
-      moves << [r + 1, f - 2] unless nil_or_friend?(board[r + 1][f - 2], player)
-    elsif r >= 1 && f <= 2
-      moves << [r - 1, f - 2] unless nil_or_friend?(board[r - 1][f - 2], player)
-    else
-      moves
-    end
+    moves << [r + 1, f - 2] if r <= 6 && f >= 2 && !nil_or_friend?(board[r + 1][f - 2], player)
+    moves << [r - 1, f - 2] if r >= 1 && f <= 2 && !nil_or_friend?(board[r - 1][f - 2], player)
+    moves
   end
 end
 
