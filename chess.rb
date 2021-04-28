@@ -368,20 +368,6 @@ class Bishop < Piece
     ne_diagonal(board, player) + nw_diagonal(board, player) + se_diagonal(board, player) + sw_diagonal(board, player)
   end
 
-  def nw_diagonal(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r += 1 unless r == 7 # NW diagonal rank
-      f -= 1 unless f.zero? # NW diagonal file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
   def ne_diagonal(board, player)
     r = pos[0] # initial rank of piece
     f = pos[1] # initial file of piece
@@ -584,6 +570,20 @@ def nil_or_friend?(piece, player)
   return false if piece == '_'
 
   piece.nil? || piece.name[0] == player.name[0]
+end
+
+def nw_diagonal(board, player, piece, count)
+  r = piece.pos[0] # initial rank of piece
+  f = piece.pos[1] # initial file of piece
+  moves = []
+  for i in 1..count
+    r += 1 unless r == 7 # NW diagonal rank
+    f -= 1 unless f.zero? # NW diagonal file
+    return moves if nil_or_friend?(board[r][f], player)
+
+    moves << [r, f]
+    return moves unless board[r][f] == '_'
+  end
 end
 
 def up(board, player, piece, count)
