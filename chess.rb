@@ -432,60 +432,7 @@ class Rook < Piece
   end
 
   def moves(board, player)
-    up(board, player) + down(board, player) + left(board, player) + right(board, player)
-  end
-
-  def up(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r += 1 unless r == 7 # Upper rank
-      #binding.pry
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
-  def down(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r -= 1 unless r.zero? # lower rank
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
-  def left(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      f -= 1 unless f.zero? # left file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
-  def right(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      f += 1 unless f == 7 # right file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
+    up(board, player, self, 7) + down(board, player, self, 7) + left(board, player, self, 7) + right(board, player, self, 7)
   end
 end
 
@@ -496,50 +443,11 @@ class Queen < Piece
   end
 
   def moves(board, player)
-    diagonal_moves(board, player) + flat_moves(board, player)
+    diagonal_moves(board, player) + straight_moves(board, player)
   end
 
-  def flat_moves(board, player)
-    up(board, player, self, 6) + down(board, player) + left(board, player) + right(board, player)
-  end
-
-  def down(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r -= 1 # lower rank
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
-  def left(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      f -= 1 # left file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
-  def right(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      f -= 1 # right file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
+  def straight_moves(board, player)
+    up(board, player, self, 7) + down(board, player, self, 7) + left(board, player, self, 7) + right(board, player, self, 7)
   end
 
   def diagonal_moves(board, player)
@@ -682,7 +590,7 @@ def up(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  i = 1
+  i = 0
   until i == count
     i += 1
     r += 1 unless r == 7 # Upper rank
@@ -690,6 +598,51 @@ def up(board, player, piece, count)
 
     moves << [r, f]
     return moves unless board[r][f] == '_' # stop if position is occupied by enemy
+  end
+end
+
+def down(board, player, piece, count)
+  r = piece.pos[0] # initial rank of piece
+  f = piece.pos[1] # initial file of piece
+  moves = []
+  i = 0
+  until i == count
+    i += 1
+    r -= 1 unless r.zero? # lower rank
+    return moves if nil_or_friend?(board[r][f], player)
+
+    moves << [r, f]
+    return moves unless board[r][f] == '_'
+  end
+end
+
+def left(board, player, piece, count)
+  r = piece.pos[0] # initial rank of piece
+  f = piece.pos[1] # initial file of piece
+  moves = []
+  i = 0
+  until i == count
+    i += 1
+    f -= 1 unless f.zero? # left file
+    return moves if nil_or_friend?(board[r][f], player)
+
+    moves << [r, f]
+    return moves unless board[r][f] == '_'
+  end
+end
+
+def right(board, player, piece, count)
+  r = piece.pos[0] # initial rank of piece
+  f = piece.pos[1] # initial file of piece
+  moves = []
+  i = 0
+  until i == count
+    i += 1
+    f += 1 unless f == 7 # right file
+    return moves if nil_or_friend?(board[r][f], player)
+
+    moves << [r, f]
+    return moves unless board[r][f] == '_'
   end
 end
 
