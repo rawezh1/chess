@@ -500,7 +500,7 @@ class Queen < Piece
   end
 
   def flat_moves(board, player)
-    up(board, player, 6) + down(board, player) + left(board, player) + right(board, player)
+    up(board, player, self, 6) + down(board, player) + left(board, player) + right(board, player)
   end
 
   def down(board, player)
@@ -678,9 +678,9 @@ def nil_or_friend?(piece, player)
   piece.nil? || piece.name[0] == player.name[0]
 end
 
-def up(board, player, count)
-  r = pos[0] # initial rank of piece
-  f = pos[1] # initial file of piece
+def up(board, player, piece, count)
+  r = piece.pos[0] # initial rank of piece
+  f = piece.pos[1] # initial file of piece
   moves = []
   i = 1
   until i == count
