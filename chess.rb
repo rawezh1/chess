@@ -296,7 +296,6 @@ class Pawn < Piece
 end
 
 class Knight < Piece
-
   def initialize(name, symbol, pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
   end
@@ -501,20 +500,7 @@ class Queen < Piece
   end
 
   def flat_moves(board, player)
-    up(board, player) + down(board, player) + left(board, player) + right(board, player)
-  end
-
-  def up(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r += 1 # Upper rank
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
+    up(board, player, 6) + down(board, player) + left(board, player) + right(board, player)
   end
 
   def down(board, player)
@@ -690,6 +676,21 @@ def nil_or_friend?(piece, player)
   return false if piece == '_'
 
   piece.nil? || piece.name[0] == player.name[0]
+end
+
+def up(board, player, count)
+  r = pos[0] # initial rank of piece
+  f = pos[1] # initial file of piece
+  moves = []
+  i = 1
+  until i == count
+    i += 1
+    r += 1 unless r == 7 # Upper rank
+    return moves if nil_or_friend?(board[r][f], player)
+
+    moves << [r, f]
+    return moves unless board[r][f] == '_' # stop if position is occupied by enemy
+  end
 end
 
 chess = Chess.new.fill_board
