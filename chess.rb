@@ -576,7 +576,7 @@ def nw_diagonal(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  for i in 1..count
+  1..count.each do
     r += 1 unless r == 7 # NW diagonal rank
     f -= 1 unless f.zero? # NW diagonal file
     return moves if nil_or_friend?(board[r][f], player)
@@ -590,9 +590,7 @@ def up(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  i = 0
-  until i == count
-    i += 1
+  1..count.each do
     r += 1 unless r == 7 # Upper rank
     return moves if nil_or_friend?(board[r][f], player)
 
@@ -605,9 +603,7 @@ def down(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  i = 0
-  until i == count
-    i += 1
+  1..count.each do
     r -= 1 unless r.zero? # lower rank
     return moves if nil_or_friend?(board[r][f], player)
 
@@ -620,9 +616,7 @@ def left(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  i = 0
-  until i == count
-    i += 1
+  1..count.each do
     f -= 1 unless f.zero? # left file
     return moves if nil_or_friend?(board[r][f], player)
 
@@ -635,9 +629,7 @@ def right(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  i = 0
-  until i == count
-    i += 1
+  1..count.each do
     f += 1 unless f == 7 # right file
     return moves if nil_or_friend?(board[r][f], player)
 
