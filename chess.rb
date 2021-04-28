@@ -359,60 +359,17 @@ class Knight < Piece
 end
 
 class Bishop < Piece
-
   def initialize(name, symbol, pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
   end
 
   def moves(board, player)
-    ne_diagonal(board, player) + nw_diagonal(board, player) + se_diagonal(board, player) + sw_diagonal(board, player)
-  end
-
-  def ne_diagonal(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r += 1 unless r == 7 # NE diagonal rank
-      f += 1 unless f == 7 # NE diagonal file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
-  def sw_diagonal(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r -= 1 unless r.zero? # SW diagonal rank
-      f -= 1 unless r.zero? # SW diagonal file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
-  def se_diagonal(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r -= 1 unless r.zero? # SE diagonal rank
-      f += 1 unless f == 7 # SE diagonal file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
+    north = ne_diag(board, player, self, 7) + nw_diag(board, player, self, 7)
+    north + se_diag(board, player, self, 7) + sw_diag(board, player, self, 7)
   end
 end
 
 class Rook < Piece
-
   def initialize(name, symbol, pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
   end
@@ -423,7 +380,6 @@ class Rook < Piece
 end
 
 class Queen < Piece
-
   def initialize(name, symbol, pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
   end
@@ -437,63 +393,8 @@ class Queen < Piece
   end
 
   def diagonal_moves(board, player)
-    ne_diagonal(board, player) + nw_diagonal(board, player) + se_diagonal(board, player) + sw_diagonal(board, player)
-  end
-
-  def nw_diagonal(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r += 1 # NW diagonal rank
-      f -= 1 # NW diagonal file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
-  def ne_diagonal(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r += 1 # NE diagonal rank
-      f += 1 # NE diagonal file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
-  def sw_diagonal(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r -= 1 # SW diagonal rank
-      f -= 1 # SW diagonal file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
-  end
-
-  def se_diagonal(board, player)
-    r = pos[0] # initial rank of piece
-    f = pos[1] # initial file of piece
-    moves = []
-    loop do
-      r -= 1 # SE diagonal rank
-      f += 1 # SE diagonal file
-      return moves if nil_or_friend?(board[r][f], player)
-
-      moves << [r, f]
-      return moves unless board[r][f] == '_'
-    end
+    north = ne_diag(board, player, self, 7) + nw_diag(board, player, self, 7)
+    north + se_diag(board, player, self, 7) + sw_diag(board, player, self, 7)
   end
 end
 
@@ -572,13 +473,55 @@ def nil_or_friend?(piece, player)
   piece.nil? || piece.name[0] == player.name[0]
 end
 
-def nw_diagonal(board, player, piece, count)
+def nw_diag(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
   1..count.each do
     r += 1 unless r == 7 # NW diagonal rank
     f -= 1 unless f.zero? # NW diagonal file
+    return moves if nil_or_friend?(board[r][f], player)
+
+    moves << [r, f]
+    return moves unless board[r][f] == '_'
+  end
+end
+
+def ne_diag(board, player, piece, count)
+  r = piece.pos[0] # initial rank of piece
+  f = piece.pos[1] # initial file of piece
+  moves = []
+  1..count.each do
+    r += 1 unless r == 7 # NE diagonal rank
+    f += 1 unless f == 7 # NE diagonal file
+    return moves if nil_or_friend?(board[r][f], player)
+
+    moves << [r, f]
+    return moves unless board[r][f] == '_'
+  end
+end
+
+def sw_diag(board, player, piece, count)
+  r = piece.pos[0] # initial rank of piece
+  f = piece.pos[1] # initial file of piece
+  moves = []
+  1..count.each do
+    r -= 1 unless r.zero? # SW diagonal rank
+    f -= 1 unless r.zero? # SW diagonal file
+    return moves if nil_or_friend?(board[r][f], player)
+
+    moves << [r, f]
+    return moves unless board[r][f] == '_'
+  end
+end
+
+def se_diag(board, player, piece, count)
+  r = piece.pos[0] # initial rank of piece
+  f = piece.pos[1] # initial file of piece
+  moves = []
+  1..count.each do
+    r -= 1 unless r.zero? # SE diagonal rank
+    f += 1 unless f == 7 # SE diagonal file
     return moves if nil_or_friend?(board[r][f], player)
 
     moves << [r, f]
