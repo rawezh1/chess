@@ -57,6 +57,7 @@ class Chess
     p "It is #{player.name} players turn, please select a piece by typing its row and column"
     from_pos = self.from_pos(player)
     to_pos = self.to_pos(player, from_pos)
+    binding.pry
     apply_move(from_pos, to_pos, player)
   end
 
@@ -70,7 +71,6 @@ class Chess
   end
 
   def invalid_choice?(choice, player)
-    #binding.pry
     if choice.length != 2 || !choice[0].is_i? || !choice[1].is_i?
       puts 'Invalid input, please type a correct value'
       return true
@@ -95,10 +95,12 @@ class Chess
 
   def to_pos(player, init_pos)
     p 'Please select a position to move the piece to by typing its row and column'
+    original_piece = @board[init_pos[0]][init_pos[1]]
     loop do
       choice = gets.chomp.split('')
-      if invalid_move?(choice, player, init_pos) then next end
+      next if invalid_move?(choice, player, init_pos)
 
+      @board[init_pos[0]][init_pos[1]] = original_piece
       return choice.map(&:to_i)
     end
   end
@@ -119,10 +121,11 @@ class Chess
   end
 
   def possible_move?(final_pos, init_pos, player)
+    binding.pry
     possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board, player)
     unless possible_moves.include?(final_pos) then return false end
     if player.in_check && !removes_check?(final_pos, player) then return false end
-    if puts_incheck?(init_pos, player) then return false end
+    if puts_incheck?(init_pos, player)[0] then return false end
     true
   end
 
@@ -384,7 +387,7 @@ end
 class King < Piece
   attr_accessor :checker
 
-  def initialize(name, symbol, pos = [1, 1], move_count = 0)
+  def initialize(name, symbol = '', pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
     @checker = nil
   end
