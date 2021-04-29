@@ -260,15 +260,15 @@ class Pawn < Piece
     super(name, symbol, pos, move_count)
   end
 
-  def moves(board, _player)
+  def moves(board, player)
     if @name[0] == 'W'
-      white_moves(board)
+      white_moves(board, player)
     else
-      black_moves(board)
+      black_moves(board, player)
     end
   end
 
-  def black_moves(board)
+  def black_moves(board, player)
     moves = []
     moves << [pos[0] + 2, pos[1]] if @move_count.zero? && board[pos[0] + 2][pos[1]] == '_'
     moves << [pos[0] + 1, pos[1]] if board[pos[0] + 1][pos[1]] == '_'
@@ -281,7 +281,7 @@ class Pawn < Piece
     moves
   end
 
-  def white_moves(board)
+  def white_moves(board, player)
     moves = []
     moves << [pos[0] - 2, pos[1]] if @move_count.zero? && board[pos[0] - 2][pos[1]] == '_'
     moves << [pos[0] - 1, pos[1]] if board[pos[0] - 1][pos[1]] == '_'
@@ -415,8 +415,9 @@ class King < Piece
   def king_castle(board, player)
     r = pos[0]
     moves = []
-    moves if board[r][7] == '_' || board[r][7].name[1] != 'R'
-    moves unless board[r][5] == '_' && board[r][6] == '_'
+    return moves if board[r][7] == '_' || board[r][7].name[1] != 'R'
+    return moves unless board[r][5] == '_' && board[r][6] == '_'
+
     if !player.in_check && !in_check?(board, player, [r, 5])[0] && !in_check?(board, player, [r, 6])[0]
       moves << [r, 6]
     end
@@ -425,8 +426,9 @@ class King < Piece
   def queen_castle(board, player)
     r = pos[0]
     moves = []
-    moves if board[r][0] == '_' || board[r][0].name[1] != 'R'
-    moves unless board[r][1] == '_' && board[r][2] == '_' && board[r][3] == '_'
+    return moves if board[r][0] == '_' || board[r][0].name[1] != 'R'
+    return moves unless board[r][1] == '_' && board[r][2] == '_' && board[r][3] == '_'
+
     if !player.in_check && !in_check?(board, player, [r, 1])[0] && !in_check?(board, player, [r, 2])[0] && !in_check?(board, player, [r, 3])[0]
       moves << [r, 2]
     end
@@ -443,6 +445,7 @@ def in_check?(board, player, pos)
     arr.each do |piece|
       next if piece == '_'
       next if piece.name[0] == player.name[0]
+      next if piece.name[2] == 'i'
       return [true, piece.pos] if piece.moves(board, other_player).include?(pos)
     end
   end
