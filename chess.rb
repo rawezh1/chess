@@ -262,9 +262,9 @@ class Pawn < Piece
 
   def moves(board, _player)
     if @name[0] == 'W'
-      self.black_moves(board)
+      white_moves(board)
     else
-      self.white_moves(board)
+      black_moves(board)
     end
   end
 
