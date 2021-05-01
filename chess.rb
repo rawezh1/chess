@@ -47,11 +47,11 @@ class Chess
     loop do
       turn(@player1)
       print_board
-      return if game_over?(@board, @player2)
+      if game_over?(@board, @player2) then return puts 'Game over' end
 
       turn(@player2)
       print_board
-      return if game_over?(@board, @player1)
+      if game_over?(@board, @player1) then return puts 'Game over' end
     end
   end
 
@@ -124,14 +124,16 @@ class Chess
   def possible_move?(final_pos, init_pos, player)
     possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board, player)
     unless possible_moves.include?(final_pos) then return false end
-    if player.in_check && !removes_check?(final_pos, player) then return false end
+    if player.in_check && !removes_check?(final_pos, init_pos, player) then return false end
     if puts_incheck?(init_pos, player)[0] then return false end
     true
   end
 
-  def removes_check?(final_pos, player)
+  def removes_check?(final_pos, init_pos, player)
     king = player.name[0] == 'W' ? 'WKi' : 'BKi'
     king_pos = pos_of(king)
+    return !in_check?(@board, player, final_pos) if king_pos == init_pos 
+
     king = @board[king_pos[0]][king_pos[1]]
     return true if king.checker.nil?
 
@@ -219,11 +221,10 @@ class Chess
     if no_legal_moves?(board, player)
       if player.in_check
         puts "Checkmate! #{player.name} player lost!"
-        true
       else
         puts 'Stalemate'
-        true
       end
+      return true
     end
     false
   end
@@ -243,7 +244,7 @@ class Chess
     moves = piece.moves(board, player)
     return [] if moves.empty?
 
-    moves.select { |move| removes_check?(move, player) }
+    moves.select { |move| removes_check?(move, piece.pos, player) }
   end
 
   def print_board
