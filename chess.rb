@@ -46,9 +46,11 @@ class Chess
   def play
     loop do
       turn(@player1)
+      print_board
       return if game_over?(@board, @player2)
 
       turn(@player2)
+      print_board
       return if game_over?(@board, @player1)
     end
   end
@@ -57,7 +59,6 @@ class Chess
     p "It is #{player.name} players turn, please select a piece by typing its row and column"
     from_pos = self.from_pos(player)
     to_pos = self.to_pos(player, from_pos)
-    binding.pry
     apply_move(from_pos, to_pos, player)
   end
 
@@ -121,7 +122,6 @@ class Chess
   end
 
   def possible_move?(final_pos, init_pos, player)
-    binding.pry
     possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board, player)
     unless possible_moves.include?(final_pos) then return false end
     if player.in_check && !removes_check?(final_pos, player) then return false end
@@ -133,6 +133,8 @@ class Chess
     king = player.name[0] == 'W' ? 'WKi' : 'BKi'
     king_pos = pos_of(king)
     king = @board[king_pos[0]][king_pos[1]]
+    return true if king.checker.nil?
+
     if final_pos[0] == king_pos[0] && final_pos[0] == king.checker.pos[0]
       between_rank?(final_pos, king)
     elsif final_pos[1] == king_pos[1] && final_pos[1] == king.checker.pos[1]
@@ -146,15 +148,15 @@ class Chess
     end
   end
 
-  def pos_of(piece)
-    pos = []
-    @board.each_with_index do |e, i|
-      e.each_with_index do |cell, j|
-        if cell == '_' then next end
-        if cell.name == piece then return pos = [i, j] end
+  def pos_of(piece_name)
+    # returns the rank and file of a piece if found, empty array otherwise
+    @board.each_with_index do |arr, r|
+      arr.each_with_index do |cell, f|
+        next if cell == '_'
+        return [r, f] if cell.name == piece_name
       end
     end
-      return pos
+    []
   end
 
   def same_diagonal?(point1, point2)
@@ -196,7 +198,7 @@ class Chess
   def puts_incheck?(init_pos, player)
     new_board = @board
     new_board[init_pos[0]][init_pos[1]] = '_'
-    in_check?(new_board, player, pos_of(King.new("#{player.name[0]}Ki")))
+    in_check?(new_board, player, pos_of("#{player.name[0]}Ki"))
   end
 
   def apply_move(init_pos, final_pos, player)
@@ -204,12 +206,13 @@ class Chess
     @board[final_pos[0]][final_pos[1]] = @board[init_pos[0]][init_pos[1]]
     @board[init_pos[0]][init_pos[1]] = '_'
     oppos_player = player.name[0] == 'W' ? player2 : player1
-    king_pos = pos_of(King.new("#{oppos_player.name[0]}Ki"))
+    king_pos = pos_of("#{oppos_player.name[0]}Ki")
     in_check = in_check?(@board, oppos_player, king_pos)
-    if in_check[0]
-      @board[king_pos[0]][king_pos[1]].checker = @board[in_check[1][0]][in_check[1][1]]
-      oppos_player.in_check = true
-    end
+    return unless in_check[0]
+
+    @board[king_pos[0]][king_pos[1]].checker = @board[in_check[1][0]][in_check[1][1]]
+    oppos_player.in_check = true
+    puts 'Check'
   end
 
   def game_over?(board, player)
@@ -229,10 +232,31 @@ class Chess
     board.each do |arr|
       arr.each do |piece|
         next if piece == '_' || piece.name[0] != player.name[0]
-        return false unless piece.moves.empty?
+        # TODO: implement legal_moves
+        return false unless legal_moves(piece, board, player).empty?
       end
     end
     true
+  end
+
+  def legal_moves(piece, board, player)
+    moves = piece.moves(board, player)
+    return [] if moves.empty?
+
+    moves.select { |move| removes_check?(move, player) }
+  end
+
+  def print_board
+    @board.map do |array|
+      arr = array.map do |element|
+        if element == '_'
+          element
+        else
+          element.symbol
+        end
+      end
+      pp arr
+    end
   end
 end
 
@@ -258,7 +282,6 @@ class Piece
 end
 
 class Pawn < Piece
-
   def initialize(name, symbol, pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
   end
@@ -405,8 +428,7 @@ class King < Piece
   end
 
   def diagonal_moves(board, player)
-    north = ne_diag(board, player, self, 1) + nw_diag(board, player, self, 1)
-    north + se_diag(board, player, self, 1) + sw_diag(board, player, self, 1)
+    ne_diag(board, player, self, 1) + nw_diag(board, player, self, 1) + se_diag(board, player, self, 1) + sw_diag(board, player, self, 1)
   end
 
   def castling_moves(board, player)
@@ -465,120 +487,123 @@ def nw_diag(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  (1..count).each do
-    r += 1 unless r == 7 # NW diagonal rank
-    f -= 1 unless f.zero? # NW diagonal file
+  1.upto(count) do
+    r.zero? || f.zero? ? break : r -= 1; f -= 1
+
     return moves if nil_or_friend?(board[r][f], player)
 
     moves << [r, f]
     return moves unless board[r][f] == '_'
   end
+  moves
 end
 
 def ne_diag(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  (1..count).each do
-    r += 1 unless r == 7 # NE diagonal rank
-    f += 1 unless f == 7 # NE diagonal file
+  1.upto(count) do
+    r.zero? || f == 7 ? break : r -= 1; f += 1
+
     return moves if nil_or_friend?(board[r][f], player)
 
     moves << [r, f]
     return moves unless board[r][f] == '_'
   end
+  moves
 end
 
 def sw_diag(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  (1..count).each do
-    r -= 1 unless r.zero? # SW diagonal rank
-    f -= 1 unless r.zero? # SW diagonal file
+  1.upto(count) do
+    r == 7 || f.zero? ? break : r += 1; f -= 1
+
     return moves if nil_or_friend?(board[r][f], player)
 
     moves << [r, f]
     return moves unless board[r][f] == '_'
   end
+  moves
 end
 
 def se_diag(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  (1..count).each do
-    r -= 1 unless r.zero? # SE diagonal rank
-    f += 1 unless f == 7 # SE diagonal file
+  1.upto(count) do
+    r == 7 || f == 7 ? break : r += 1; f += 1
+
     return moves if nil_or_friend?(board[r][f], player)
 
     moves << [r, f]
     return moves unless board[r][f] == '_'
   end
+  moves
 end
 
 def up(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  (1..count).each do
-    r += 1 unless r == 7 # Upper rank
+  1.upto(count) do
+    r.zero? ? break : r -= 1
+
     return moves if nil_or_friend?(board[r][f], player)
 
     moves << [r, f]
     return moves unless board[r][f] == '_' # stop if position is occupied by enemy
   end
+  moves
 end
 
 def down(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  (1..count).each do
-    r -= 1 unless r.zero? # lower rank
+  1.upto(count) do
+    r == 7 ? break : r += 1
+
     return moves if nil_or_friend?(board[r][f], player)
 
     moves << [r, f]
     return moves unless board[r][f] == '_'
   end
+  moves
 end
 
 def left(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  (1..count).each do
-    f -= 1 unless f.zero? # left file
+  1.upto(count) do
+    f == 7 ? break : f += 1
+
     return moves if nil_or_friend?(board[r][f], player)
 
     moves << [r, f]
     return moves unless board[r][f] == '_'
   end
+  moves
 end
 
 def right(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
   moves = []
-  (1..count).each do
-    f += 1 unless f == 7 # right file
+  1.upto(count) do
+    f.zero? ? break : f -= 1
+
     return moves if nil_or_friend?(board[r][f], player)
 
     moves << [r, f]
     return moves unless board[r][f] == '_'
   end
+  moves
 end
 
 chess = Chess.new.fill_board
-chess.board.map do |array|
-  arr = array.map do |element|
-    if element == '_'
-      element
-    else
-      element.symbol
-    end
-  end
-  pp arr
-end
+chess.print_board
 chess.play
-# TODO: Add print board,is player parameter redundant?, is passing rank and file better?, add en passant, promotion
+# TODO: Update check condition after a move removes check,is player parameter redundant?, is passing rank and file better?, add en passant, promotion
