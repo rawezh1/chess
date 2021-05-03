@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'pry'
-# Adds check if string is integer to String class
+# Adds a method to determine if a string is integer or not to String class
 class String
-  def is_i?
+  def i?
     /\A[-+]?\d+\z/ === self
   end
 end
@@ -12,6 +12,7 @@ end
 class Chess
   attr_accessor :board, :player1, :player2
 
+  # Chess game starts with a borad, two players, and number of turns.
   def initialize
     @board = Array.new(8) { Array.new(8) { '_' } }
     @player1 = Player.new('White')
@@ -19,6 +20,7 @@ class Chess
     @turns = 0
   end
 
+  # Fills the chess board with pieces.
   def fill_board
     # fill black side
     @board[1] = Array.new(8).fill { |i| Pawn.new('BP', '♙', [1, i]) }
@@ -43,6 +45,7 @@ class Chess
     self
   end
 
+  # Starts the game, with the two players turns and checking if the game is over or not.
   def play
     loop do
       turn(@player1)
@@ -55,6 +58,7 @@ class Chess
     end
   end
 
+  # One players turn, takes in a piece and a move and apply the move to the piece.
   def turn(player)
     p "It is #{player.name} players turn, please select a piece by typing its row and column"
     from_pos = self.from_pos(player)
@@ -62,38 +66,42 @@ class Chess
     apply_move(from_pos, to_pos, player)
   end
 
+  # Selects a piece by taking its position from the player
   def from_pos(player)
     loop do
-      choice = gets.chomp.split('')
-      if invalid_choice?(choice, player) then next end
+      choice = gets.chomp.split('') # Prompt the player to choose
+      if invalid_choice?(choice, player) then next end # If the choice is invalid, ask again
 
-      return choice.map(&:to_i)
+      return choice.map(&:to_i) # convert the string given by player to integer
     end
   end
 
+  # Checks if the player has entered a correct value
   def invalid_choice?(choice, player)
-    if choice.length != 2 || !choice[0].is_i? || !choice[1].is_i?
+    # If more than two values is given or if they are not integers then get values again
+    if choice.length != 2 || !choice[0].i? || !choice[1].i?
       puts 'Invalid input, please type a correct value'
       return true
     end
-    choice = choice.map(&:to_i)
-    if !choice[0].between?(0, 7) || !choice[1].between?(0, 7)
+    choice = choice.map(&:to_i) # convert string to integer
+    if !choice[0].between?(0, 7) || !choice[1].between?(0, 7) # If the choice is out of bound then it is invalid
       puts 'Invalid input, please type a correct value'
       true
-    elsif @board[choice[0]][choice[1]] == '_'
+    elsif @board[choice[0]][choice[1]] == '_' # If the position is empty then invalid
       puts 'Invalid input, please type a correct value'
       true
-    elsif @board[choice[0]][choice[1]].name[0] != player.name[0]
+    elsif @board[choice[0]][choice[1]].name[0] != player.name[0] # If the piece does not belong to current player then invalid
       puts 'Invalid input, please type a correct value'
       true
-    elsif @board[choice[0]][choice[1]].moves(@board, player).empty?
+    elsif @board[choice[0]][choice[1]].moves(@board, player).empty? # If piece has no legal moves then invalid
       puts 'Invalid input, please type a correct value'
       true
-    else
+    else # Else it is a valid choice
       false
     end
   end
 
+  # Selects a position to move the piece to by getting player input
   def to_pos(player, init_pos)
     p 'Please select a position to move the piece to by typing its row and column'
     original_piece = @board[init_pos[0]][init_pos[1]]
@@ -106,8 +114,9 @@ class Chess
     end
   end
 
+  # Checks if the move given by player is invalid
   def invalid_move?(choice, player, init_pos)
-    if choice.length != 2 || !choice[0].is_i? || !choice[1].is_i?
+    if choice.length != 2 || !choice[0].i? || !choice[1].i? # checks input form (same as invalid_choice)
       puts 'Invalid input, please type a correct value'
       return true
     end
@@ -115,33 +124,41 @@ class Chess
     if !choice[0].between?(0, 7) || !choice[1].between?(0, 7)
       puts 'Invalid input, please type a correct value'
       true
-    elsif !possible_move?(choice, init_pos, player)
+    elsif !possible_move?(choice, init_pos, player) # Checks if move legal or not
       puts 'Invalid input, please type a correct value'
       true
     end
   end
 
+  # Checks for possibility of moving the piece to the given location.
   def possible_move?(final_pos, init_pos, player)
     possible_moves = @board[init_pos[0]][init_pos[1]].moves(@board, player)
-    unless possible_moves.include?(final_pos) then return false end
-    if player.in_check && !removes_check?(final_pos, init_pos, player) then return false end
-    if puts_incheck?(init_pos, player)[0] then return false end
+    # If piece can't move there then invalid
+    return false unless possible_moves.include?(final_pos)
+    # If player is in check and the move can't remove check then invalid
+    return false if player.in_check && !removes_check?(final_pos, init_pos, player)
+    # If the move puts the player in check then invalid
+    return false if puts_incheck?(init_pos, player)[0]
+
     true
   end
 
+  # Checks if the move removes check from player
   def removes_check?(final_pos, init_pos, player)
-    king = player.name[0] == 'W' ? 'WKi' : 'BKi'
-    king_pos = pos_of(king)
-    return !in_check?(@board, player, final_pos) if king_pos == init_pos 
+    king = player.name[0] == 'W' ? 'WKi' : 'BKi' # Gets king name to use for king position
+    king_pos = pos_of(king) # Gets king position
+    # Checks if the king moves out of check if the selected piece is king
+    return !in_check?(@board, player, final_pos) if king_pos == init_pos
 
     king = @board[king_pos[0]][king_pos[1]]
-    return true if king.checker.nil?
+    return true if king.checker.nil? # Check if king is in check
 
-    if final_pos[0] == king_pos[0] && final_pos[0] == king.checker.pos[0]
+    # Checks if move falls between king and the piece checking the king
+    if final_pos[0] == king_pos[0] && final_pos[0] == king.checker.pos[0] # King and checker on same rank
       between_rank?(final_pos, king)
-    elsif final_pos[1] == king_pos[1] && final_pos[1] == king.checker.pos[1]
+    elsif final_pos[1] == king_pos[1] && final_pos[1] == king.checker.pos[1] # King and checker on same file
       between_file?(final_pos, king)
-    elsif same_diagonal?(final_pos, king_pos)
+    elsif same_diagonal?(final_pos, king_pos) # King and piece and checker on same diagonal
       if same_diagonal?(king_pos, king.checker.pos)
         in_between?(final_pos, king)
       else
@@ -161,10 +178,12 @@ class Chess
     []
   end
 
+  # Checks if two squares are on same diagonal
   def same_diagonal?(point1, point2)
-    point2[1]-point1[1] == point2[0] - point1[0] || point2[1]-point1[1] == point1[0] - point2[0]
+    point2[1] - point1[1] == point2[0] - point1[0] || point2[1] - point1[1] == point1[0] - point2[0]
   end
 
+  # Checks if square is between the king and checker in same rank
   def between_rank?(final_pos, king)
     if (king.pos[0] - king.checker.pos[0]).negative?
       final_pos[0].between?(king.pos[0], king.checker.pos[0])
@@ -173,14 +192,16 @@ class Chess
     end
   end
 
+  # Checks if square is between the king and checker in same file
   def between_file?(final_pos, king)
-    if king.pos[1] - king.checker.pos[1] < 0
-      final_pos[1].between?(king.pos[1],king.checker.pos[1])
+    if (king.pos[1] - king.checker.pos[1]).negative?
+      final_pos[1].between?(king.pos[1], king.checker.pos[1])
     else
       final_pos[1].between?(king.checker.pos[1], king.pos[1])
     end
   end
 
+  # Checks if square is between the king and checker in same diagonal
   def in_between?(final_pos, king)
     if (king.pos[0] - king.checker.pos[0]).negative?
       if (king.pos[1] - king.checker.pos[1]).negative?
@@ -197,23 +218,32 @@ class Chess
     end
   end
 
+  # Checks if move puts king in check by creating a new board and
+  # setting the current position of piece to empty and
+  # seeing if king in new board is in check
   def puts_incheck?(init_pos, player)
     new_board = @board
     new_board[init_pos[0]][init_pos[1]] = '_'
     in_check?(new_board, player, pos_of("#{player.name[0]}Ki"))
   end
 
+  # Applies the move given by player
   def apply_move(init_pos, final_pos, player)
+    # Sets the position variable of the piece to the final position
     @board[init_pos[0]][init_pos[1]].pos = [final_pos[0], final_pos[1]]
+    # Moves the piece to given square
     @board[final_pos[0]][final_pos[1]] = @board[init_pos[0]][init_pos[1]]
+    # Sets the original position of the piece to empty
     @board[init_pos[0]][init_pos[1]] = '_'
+    # Checks if the move puts opposite player in check
     oppos_player = player.name[0] == 'W' ? player2 : player1
     king_pos = pos_of("#{oppos_player.name[0]}Ki")
     in_check = in_check?(@board, oppos_player, king_pos)
     return unless in_check[0]
 
+    # Set checker variable of opposite king to checking piece
     @board[king_pos[0]][king_pos[1]].checker = @board[in_check[1][0]][in_check[1][1]]
-    oppos_player.in_check = true
+    oppos_player.in_check = true # Set in_check variable for opposite player to true
     puts 'Check'
   end
 
@@ -229,11 +259,12 @@ class Chess
     false
   end
 
+  # Checks if there are any legal moves for player
   def no_legal_moves?(board, player)
     board.each do |arr|
       arr.each do |piece|
         next if piece == '_' || piece.name[0] != player.name[0]
-        # TODO: implement legal_moves
+
         return false unless legal_moves(piece, board, player).empty?
       end
     end
@@ -261,16 +292,18 @@ class Chess
   end
 end
 
+# Plyaer is a player with a name (white or black) and whether or not the player is in check
 class Player
   attr_accessor :name, :in_check
 
   def initialize(name)
     @name = name
-    # @pieces = [pieces]
     @in_check = false
   end
 end
 
+# Parent class of chess pieces with a name (name of piece and white or black), a symbol
+# a position on board, and number of moves it has moved so far
 class Piece
   attr_accessor :move_count, :pos, :name, :symbol
 
@@ -282,23 +315,28 @@ class Piece
   end
 end
 
+# A pawn piece with forward moves and diagonal captures (also counted as possible moves)
 class Pawn < Piece
   def initialize(name, symbol, pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
   end
 
   def moves(board, player)
-    if @name[0] == 'W'
+    if @name[0] == 'W' # checks if the pawn is white or black
       white_moves(board, player)
     else
       black_moves(board, player)
     end
   end
 
+  # Legal moves for a black pawn
   def black_moves(board, player)
     moves = []
+    # Two sqaure move if first move
     moves << [pos[0] + 2, pos[1]] if @move_count.zero? && board[pos[0] + 2][pos[1]] == '_'
+    # One move forward
     moves << [pos[0] + 1, pos[1]] if board[pos[0] + 1][pos[1]] == '_'
+    # Diagonal captre moves
     unless board[pos[0] + 1][pos[1] + 1] == '_' || nil_or_friend?(board[pos[0] + 1][pos[1] + 1], player)
       moves << [pos[0] + 1, pos[1] + 1]
     end
@@ -310,8 +348,11 @@ class Pawn < Piece
 
   def white_moves(board, player)
     moves = []
+    # Two sqaure move if first move
     moves << [pos[0] - 2, pos[1]] if @move_count.zero? && board[pos[0] - 2][pos[1]] == '_'
+    # One move forward
     moves << [pos[0] - 1, pos[1]] if board[pos[0] - 1][pos[1]] == '_'
+    # Diagonal captre moves
     unless board[pos[0] - 1][pos[1] + 1] == '_' || nil_or_friend?(board[pos[0] - 1][pos[1] + 1], player)
       moves << [pos[0] - 1, pos[1] + 1]
     end
@@ -322,6 +363,7 @@ class Pawn < Piece
   end
 end
 
+# A knight piece with L shaped moves
 class Knight < Piece
   def initialize(name, symbol, pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
@@ -368,6 +410,7 @@ class Knight < Piece
   end
 end
 
+# A bishop piece with diagonal moves
 class Bishop < Piece
   def initialize(name, symbol, pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
@@ -379,6 +422,7 @@ class Bishop < Piece
   end
 end
 
+# A rook piece with straight moves
 class Rook < Piece
   def initialize(name, symbol, pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
@@ -389,6 +433,7 @@ class Rook < Piece
   end
 end
 
+# A queen piece with diagonal and straight moves
 class Queen < Piece
   def initialize(name, symbol, pos = [1, 1], move_count = 0)
     super(name, symbol, pos, move_count)
@@ -408,6 +453,7 @@ class Queen < Piece
   end
 end
 
+# A king piece with a checker (a piece checking it) and one move to all sides plus castling
 class King < Piece
   attr_accessor :checker
 
@@ -438,6 +484,7 @@ class King < Piece
     king_castle(board, player) + queen_castle(board, player)
   end
 
+  # Checks if king side castle is possible and returns it if so
   def king_castle(board, player)
     r = pos[0]
     moves = []
@@ -449,6 +496,7 @@ class King < Piece
     end
   end
 
+  # Checks if queen side castle is possible and returns it if so
   def queen_castle(board, player)
     r = pos[0]
     moves = []
@@ -461,12 +509,14 @@ class King < Piece
   end
 end
 
+# Chechks if a square on the board is in check by checking opposite pieces moves
 def in_check?(board, player, pos)
   if player.name[0] == 'W'
     other_player = Player.new('Black')
   else
     other_player = Player.new('White')
   end
+  # retrun true and the checking piece if it is possible for an enemy piece to attack a sqaure
   board.each do |arr|
     arr.each do |piece|
       next if piece == '_'
@@ -478,12 +528,14 @@ def in_check?(board, player, pos)
   [false, []]
 end
 
+# Check if square is out of bounds or contains a friend
 def nil_or_friend?(piece, player)
   return false if piece == '_'
 
   piece.nil? || piece.name[0] == player.name[0]
 end
 
+# Up left diagonal moves up to a certain count (for example , 1 for king and 7 for bishop)
 def nw_diag(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
@@ -499,6 +551,7 @@ def nw_diag(board, player, piece, count)
   moves
 end
 
+# Up right diagonal moves up to a certain count
 def ne_diag(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
@@ -514,6 +567,7 @@ def ne_diag(board, player, piece, count)
   moves
 end
 
+# Down left diagonal moves up to a certain count
 def sw_diag(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
@@ -529,6 +583,7 @@ def sw_diag(board, player, piece, count)
   moves
 end
 
+# Down right diagonal moves up to a certain count
 def se_diag(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
@@ -544,6 +599,7 @@ def se_diag(board, player, piece, count)
   moves
 end
 
+# Straight up moves
 def up(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
@@ -559,6 +615,7 @@ def up(board, player, piece, count)
   moves
 end
 
+# Straight down moves
 def down(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
@@ -574,6 +631,7 @@ def down(board, player, piece, count)
   moves
 end
 
+# Straight left moves
 def left(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
@@ -589,6 +647,7 @@ def left(board, player, piece, count)
   moves
 end
 
+# Straight right moves
 def right(board, player, piece, count)
   r = piece.pos[0] # initial rank of piece
   f = piece.pos[1] # initial file of piece
@@ -607,4 +666,6 @@ end
 chess = Chess.new.fill_board
 chess.print_board
 chess.play
-# TODO: Update check condition after a move removes check,is player parameter redundant?, is passing rank and file better?, add en passant, promotion
+# TODO: Update check condition after a move removes check,add save system,
+# TODO: Is player parameter redundant?, is passing rank and file better?,
+# TODO: Add en passant, promotion, Refactor methods and classes
