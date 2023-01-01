@@ -58,7 +58,7 @@ class Chess
     end
   end
 
-  # One players turn, takes in a piece and a move and apply the move to the piece.
+  # One player's turn, takes in a piece and a move and apply the move to the piece.
   def turn(player)
     p "It is #{player.name} players turn, please select a piece by typing its row and column"
     from_pos = self.from_pos(player)
